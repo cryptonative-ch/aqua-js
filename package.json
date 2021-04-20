@@ -1,0 +1,30 @@
+{
+  "name": "@dxdao/mesa",
+  "version": "1.0.0",
+  "description": "MesaJS gives developer access to the entire Mesa ecosystem a single package",
+  "main": "dist/index.js",
+  "dependencies": {
+    "@typechain/ethers-v5": "^6.0.5",
+    "axios": "^0.21.1",
+    "ethers": "^5.1.0",
+    "nodemon": "^2.0.7",
+    "typechain": "^4.0.3",
+    "typescript": "^4.2.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "typechain": "typechain --target ethers-v5 --outDir src/contracts abis/*.json",
+    "build-abis": "build-abis.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cryptonative-ch/mesa-js.git"
+  },
+  "keywords": [],
+  "author": "Adam Azad <adam@adamazad.com> (https://adamazad.com/)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cryptonative-ch/mesa-js/issues"
+  },
+  "homepage": "https://github.com/cryptonative-ch/mesa-js#readme"
+}
