@@ -2,15 +2,23 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import Axios from 'axios'
 // Subgraph Schema types
-import { FixedPriceSaleBase, MesaFactory, SaleTemplate } from 'src/types/subgraph'
+import { FixedPriceSaleBase, MesaFactory, SaleTemplate } from './types/subgraph'
 
 interface SubgraphResponse<T = any> {
-  data: T
+  data: {
+    [name: string]: T
+  }
 }
 
-export class Subgraph implements Subgraph {
+type KeyValuePair = [key: string, value: any]
+
+interface SubgraphSchemaFieldTypes {
+  [key: string]: typeof BigNumber | NumberConstructor | StringConstructor | BooleanConstructor
+}
+
+export class Subgraph {
   private endpoint: string
-  protected static MESA_FACTORY_ID = 'MesaFactory'
+  static MESA_FACTORY_ID = 'MesaFactory'
 
   static MESA_FACTORY_FIELDS: SubgraphSchemaFieldTypes = {
     id: String,
@@ -41,10 +49,12 @@ export class Subgraph implements Subgraph {
     createdAt: Number,
     updatedAt: Number,
     deletedAt: Number,
-    address: String,
-    factory: String,
     name: String,
-    verified: Boolean,
+  }
+
+  static FIXED_PRICE_SALE_PURCHASE_FIELDS: SubgraphSchemaFieldTypes = {
+    amount: BigNumber,
+    buyer: String,
   }
 
   constructor(endpoint: string) {
@@ -73,27 +83,28 @@ export class Subgraph implements Subgraph {
 
   async getMesaFactory(fields?: string): Promise<MesaFactory> {
     const { data } = await this.query<MesaFactory>(`{
-      mesaFactory {
+      mesaFactory (id: "${Subgraph.MESA_FACTORY_ID}") {
         ${fields || Object.keys(Subgraph.MESA_FACTORY_FIELDS).join(', ')}
       }
     }`)
     // Map value to correct types
-    const mesaFactory = Object.entries(data).reduce<MesaFactory>((acc, [key, value]) => {
-      const fixedValue = this.mapBigDecimalToBigNumber(Subgraph.MESA_FACTORY_FIELDS, value)
+    const mesaFactory = Object.entries(data.mesaFactory).reduce<MesaFactory>((acc, [key, value]) => {
+      const fixedValue = this.mapBigDecimalToBigNumber(Subgraph.MESA_FACTORY_FIELDS, [key, value])
       acc[key] = fixedValue
       return acc
     }, {} as MesaFactory)
+
     return mesaFactory
   }
 
   async getFixedPriceSales(fields?: string): Promise<FixedPriceSaleBase[]> {
     const { data } = await this.query<FixedPriceSaleBase[]>(`{
       fixedPriceSales {
-        ${fields || Object.keys(Subgraph.SALE_TEMPLATE_FIELDS).join(', ')}
+        ${fields || Object.keys(Subgraph.FIXED_PRICE_SALE_FIELDS).join(', ')}
       }
     }`)
     // Map value to correct types
-    const fixedPriceSales = data.map(fixedPriceSale => {
+    const fixedPriceSales = data.fixedPriceSales.map(fixedPriceSale => {
       return Object.entries(fixedPriceSale).reduce<FixedPriceSaleBase>((acc, [key, value]) => {
         const fixedValue = this.mapBigDecimalToBigNumber(Subgraph.FIXED_PRICE_SALE_FIELDS, value)
         acc[key] = fixedValue
@@ -107,11 +118,11 @@ export class Subgraph implements Subgraph {
   async getFixedPriceSaleByAddress(address: string, fields?: string): Promise<FixedPriceSaleBase> {
     const { data } = await this.query<FixedPriceSaleBase>(`{
       fixedPriceSale (id: "${address}") {
-        ${fields || Object.keys(Subgraph.SALE_TEMPLATE_FIELDS).join(', ')}
+        ${fields || Object.keys(Subgraph.FIXED_PRICE_SALE_FIELDS).join(', ')}
       }
     }`)
     // Map value to correct types
-    return Object.entries(data).reduce<FixedPriceSaleBase>((acc, [key, value]) => {
+    return Object.entries(data.fixedPriceSale).reduce<FixedPriceSaleBase>((acc, [key, value]) => {
       const fixedValue = this.mapBigDecimalToBigNumber(Subgraph.FIXED_PRICE_SALE_FIELDS, value)
       acc[key] = fixedValue
       return acc
@@ -124,32 +135,22 @@ export class Subgraph implements Subgraph {
         ${fields || Object.keys(Subgraph.SALE_TEMPLATE_FIELDS).join(', ')}
       }
     }`)
-    return data
+    return data.saleTemplates
   }
 
   async getSaleTemplateById(id: string, fields?: string): Promise<SaleTemplate> {
-    const { data } = await this.query(`{
+    const { data } = await this.query<SaleTemplate>(`{
       saleTemplate (id: "${id}") {
         ${fields || Object.keys(Subgraph.SALE_TEMPLATE_FIELDS).join(', ')}
       }
     }`)
     // Doesn't have BigDecimal
-    return data
-  }
-
-  async getSaleTemplateByAddress(address: string, fields?: string): Promise<SaleTemplate> {
-    const { data } = await this.query(`{
-      saleTemplate (address: "${address}") {
-        ${fields || Object.keys(Subgraph.SALE_TEMPLATE_FIELDS).join(', ')}
-      }
-    }`)
-
-    return data
+    return data.saleTemplate
   }
 
   mapBigDecimalToBigNumber(schema: SubgraphSchemaFieldTypes, [key, value]: KeyValuePair): string | number | BigNumber {
     // The value should be BigNumber
-    if (schema.key && schema[key] === BigNumber) {
+    if (schema[key] === BigNumber) {
       return BigNumber.from(value)
     }
     return value
@@ -165,10 +166,4 @@ export class Subgraph implements Subgraph {
     }
     return value
   }
-}
-
-type KeyValuePair = [key: string, value: any]
-
-interface SubgraphSchemaFieldTypes {
-  [key: string]: typeof BigNumber | NumberConstructor | StringConstructor | BooleanConstructor
 }
