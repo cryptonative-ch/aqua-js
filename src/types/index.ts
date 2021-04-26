@@ -1,28 +1,42 @@
 // Externals
-import { BigNumber, providers } from 'ethers'
+import type { Provider } from '@ethersproject/providers'
+import type { Signer } from 'ethers'
 // Contracts
-import { MesaFactory, SaleLauncher, TemplateLauncher } from 'src/contracts'
+import { MesaFactory, SaleLauncher, TemplateLauncher } from '../contracts'
 // Subgraph
-import { Subgraph } from 'src/Subgraph'
+import type { Subgraph } from '../Subgraph'
+// Export
+export type { InitDataFairSaleOptions, InitDataFixedPriceSaleOptions } from './encoders'
+export type { FixedPriceSaleOptions } from './sales'
+export type {
+  BooleanMap,
+  DocumentTimestampFields,
+  FixedPriceSaleBase,
+  FixedPriceSalePopulated,
+  FixedPriceSalePurchase,
+  MesaFactory,
+  SaleTemplate,
+  Token,
+} from './subgraph'
 
 export interface CreateInstanceOptions {
   factory: string
   saleLauncher: string
   templateLauncher: string
-  provider: providers.Provider
+  provider: Provider | Signer
   subgraphEndpoint: string
 }
 
-export interface Contracts {
+export interface MesaContracts {
   factory: MesaFactory
   saleLauncher: SaleLauncher
   templateLauncher: TemplateLauncher
 }
 
-export interface MesaInstance {
-  contracts: Contracts
+export interface MesaInstance<P = Provider | Signer> {
+  contracts: MesaContracts
   subgraph: Subgraph
-  provider: providers.Provider
+  provider: P
 }
 
 export interface AddSaleOptions {
@@ -33,4 +47,11 @@ export interface AddSaleOptions {
 export interface AddTemplateOptions {
   mesa: MesaInstance
   template: string
+}
+
+export interface MesaConfigMap {
+  factory: string
+  saleLauncher: string
+  templateLauncher: string
+  subgraph: string
 }
