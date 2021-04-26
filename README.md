@@ -5,7 +5,8 @@ There are 3 main components:
 2. Subgraph class. Accepts the graphqhl endpoint and offers methods to read from the Subgraph.
 3. Sales module. Exports helper functions to interact with Mesa Sales
 
-Others
+Others:
+
 4. Exports xDai and Rinkeby networks config.
 5. Exports ABI encoders
 6. Exports types
