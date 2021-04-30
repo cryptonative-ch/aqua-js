@@ -1,6 +1,7 @@
 // Externals
-import { Provider } from '@ethersproject/abstract-provider'
+import { Provider, TransactionReceipt } from '@ethersproject/abstract-provider'
 import { Signer } from '@ethersproject/abstract-signer'
+import { BigNumber, BigNumberish, BytesLike, ContractReceipt, ContractTransaction, Event } from 'ethers'
 // Contracts
 import {
   FixedPriceSaleTemplate__factory,
@@ -16,7 +17,7 @@ import {
 // ABI encoders
 import { encodeInitDataFixedPriceSale } from './encoders'
 // Errors
-import { SaleTemplateNotRegistered } from './errors'
+import { MesaError, SaleTemplateNotRegistered } from './errors'
 // Subgraph
 import { Subgraph } from './Subgraph'
 // Types/Interfaces
@@ -97,7 +98,11 @@ export class Mesa {
    * @returns `FixedPriceSale` instance
    * @throws `SaleTemplateNotRegistered` if the template is not found
    */
-  async createFixedPriceSale(saleOptions: FixedPriceSaleOptions): Promise<FixedPriceSale> {
+  async createFixedPriceSale(
+    saleOptions: FixedPriceSaleOptions
+  ): Promise<{ fixedPriceSale: FixedPriceSale; transactions: ContractTransaction[] }> {
+    // Store all transctions
+    const transactions: ContractTransaction[] = []
     // Fetch the saleTemplateId
     const saleTemplates = await this.subgraph.getSaleTemplates()
     const fixedPriceSaleTemplate = saleTemplates.find(({ name }) => name == 'FixedPriceSaleTemplate')
@@ -112,17 +117,54 @@ export class Mesa {
     })
     // Launch a new template
     const launchTemplateTx = await this.factory.launchTemplate(fixedPriceSaleTemplate.id, saleOptionsInitDataBytes)
-    const launchTemplateTxRecipt = await launchTemplateTx.wait(1)
-    // Extract the new SaleTemplate address
-    const newSaleTemplateAddress = launchTemplateTxRecipt.logs[0].topics[0]
-    // Connect and create sale
-    const saleTemplate = FixedPriceSaleTemplate__factory.connect(newSaleTemplateAddress, this.provider)
-    const createSaleTx = await saleTemplate.createSale({
-      value: await this.factory.saleFee(), // fetch the saleFee from the Factory
+    // Add to transctions
+    transactions.push(launchTemplateTx)
+    const launchTemplateTxRecipt = await launchTemplateTx.wait(2)
+    // Get the <Type>SaleTemplate address
+    const templateAddress = this.getLaunchedTemplateAddress(launchTemplateTxRecipt)
+    // Get the SaleTemplate address
+    const saleTemplate = FixedPriceSaleTemplate__factory.connect(templateAddress, this.provider)
+    // Sale fee
+    const mesaSaleFee = await this.factory.saleFee()
+    // Estimate gas
+    const estimatedGas = saleTemplate.estimateGas.createSale({
+      value: mesaSaleFee,
     })
-    const createSaleTxReceipt = await createSaleTx.wait(1)
+    const createSaleTx = await saleTemplate.createSale({
+      value: mesaSaleFee, // fetch the saleFee from the Factory
+      gasLimit: (await estimatedGas).mul(BigNumber.from(1.1)), // Add additional 10% gas
+    })
+    // Add to transactions
+    transactions.push(createSaleTx)
+    const createSaleTxReceipt = await createSaleTx.wait(3)
+    // Add to transctions
     // Extract the newSale from logs
     const newSaleAddress = `0x${createSaleTxReceipt.logs[0].topics[1].substring(26)}`
-    return FixedPriceSale__factory.connect(newSaleAddress, this.provider)
+
+    return {
+      fixedPriceSale: FixedPriceSale__factory.connect(newSaleAddress, this.provider),
+      transactions,
+    }
+  }
+
+  /**
+   *
+   * @param transctionReceipt
+   */
+  getLaunchedTemplateAddress(transctionReceipt: ContractReceipt): string {
+    // Extract the new SaleTemplate address from TemplateLaunched event
+    if (!transctionReceipt.events) {
+      throw new MesaError('Transction did not emit any event')
+    }
+    // Filter TemplateLaunched
+    const eventTemplateLaunched = transctionReceipt.events.find(
+      event => event.event === this.factory.interface.events['TemplateLaunched(address,uint256)'].name
+    )
+    // Event was not found
+    if (!eventTemplateLaunched || !eventTemplateLaunched.args) {
+      throw new MesaError('Transction did not emit any event TemplateLaunched')
+    }
+
+    return eventTemplateLaunched.args.template as string
   }
 }
