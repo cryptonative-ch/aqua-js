@@ -125,14 +125,8 @@ export class Mesa {
     // Get the SaleTemplate address
     const saleTemplate = FixedPriceSaleTemplate__factory.connect(templateAddress, this.provider)
     // Sale fee
-    const mesaSaleFee = await this.factory.saleFee()
-    // Estimate gas
-    const estimatedGas = saleTemplate.estimateGas.createSale({
-      value: mesaSaleFee,
-    })
     const createSaleTx = await saleTemplate.createSale({
-      value: mesaSaleFee, // fetch the saleFee from the Factory
-      gasLimit: (await estimatedGas).mul(BigNumber.from(1.1)), // Add additional 10% gas
+      value: await this.factory.saleFee(), // fetch the saleFee from the Factory
     })
     // Add to transactions
     transactions.push(createSaleTx)
@@ -140,7 +134,6 @@ export class Mesa {
     // Add to transctions
     // Extract the newSale from logs
     const newSaleAddress = `0x${createSaleTxReceipt.logs[0].topics[1].substring(26)}`
-
     return {
       fixedPriceSale: FixedPriceSale__factory.connect(newSaleAddress, this.provider),
       transactions,
