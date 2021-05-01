@@ -1,7 +1,7 @@
 // Externals
-import { Provider, TransactionReceipt } from '@ethersproject/abstract-provider'
+import { ContractReceipt, ContractTransaction } from 'ethers'
+import { Provider } from '@ethersproject/abstract-provider'
 import { Signer } from '@ethersproject/abstract-signer'
-import { BigNumber, BigNumberish, BytesLike, ContractReceipt, ContractTransaction, Event } from 'ethers'
 // Contracts
 import {
   FixedPriceSaleTemplate__factory,
