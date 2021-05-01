@@ -141,7 +141,7 @@ export class Mesa {
   }
 
   /**
-   *
+   * Accepts a `ContractReceipt` and tries to find `TemplateLaunched(address,uint256)` event and returns the template address
    * @param transctionReceipt
    */
   getLaunchedTemplateAddress(transctionReceipt: ContractReceipt): string {
