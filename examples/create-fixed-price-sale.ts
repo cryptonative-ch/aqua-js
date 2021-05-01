@@ -1,17 +1,19 @@
 import { JsonRpcProvider } from '@ethersproject/providers'
-import { utils, Wallet, ContractFactory, ethers } from 'ethers'
+import { utils, ContractFactory, ethers } from 'ethers'
 
-import { getWallets } from './helpers/wallet'
-
+// Artifacts
 import { abi, bytecode } from './artifacts/ERC20Mintable.json'
+// MesaJS
 import { Mesa, RINKEBY_CONFIG, XDAI_CONFIG } from '../src'
+import { getWallets } from './helpers/wallet'
 import { mnemonic } from '../secrets.json'
+import { RINKEBY_INFURA_ENDPOINT, WXDAI_ADDRESS, XDAI_RPC_ENDPOINT } from './constants'
 ;(async () => {
-  const WXDAI_TOKEN = '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d'
-  const ADM_TOKEN = '0x1716f4bb1D32500cDd897ee88a61bb78B003FBd3'
+  // Wrapped XDAI
 
-  const xDaiProvider = new JsonRpcProvider('https://rpc.xdaichain.com/')
-  const rinkebyProvider = new JsonRpcProvider('https://rinkeby.infura.io/v3/e1a3bfc40093494ca4f36b286ab36f2d')
+  // Providers: XDAI and Rinkeby
+  const xDaiProvider = new JsonRpcProvider(XDAI_RPC_ENDPOINT)
+  const rinkebyProvider = new JsonRpcProvider(RINKEBY_INFURA_ENDPOINT)
 
   const provider = rinkebyProvider
 
@@ -20,16 +22,15 @@ import { mnemonic } from '../secrets.json'
 
   // Start Mesa instance
   const mesa = new Mesa(RINKEBY_CONFIG, saleCreator)
-
-  // Approve saleLauncher by saleCreator
-
   const ERC20MintableFactory = new ContractFactory(abi, bytecode, saleCreator)
-  const adamToken = await ERC20MintableFactory.attach(ADM_TOKEN)
-  await adamToken.approve(mesa.saleLauncher.address, ethers.constants.MaxUint256)
+  // Deploy example tokens
+  const mesaToken = await ERC20MintableFactory.deploy('Mesa', 'MESA')
   // total tokens for sale is 1000
   const tokensForSale = utils.parseEther('1000')
   // Mint tokensForSale to saleCreator
-  // await adamToken.mint(saleCreator.address, tokensForSale)
+  await mesaToken.mint(saleCreator.address, tokensForSale)
+  // Approve saleLauncher by saleCreator
+  await mesaToken.approve(mesa.saleLauncher.address, ethers.constants.MaxUint256)
   // Use the last block timestamp to set startDate and endDate
   const lastBlock = await provider.getBlock(await provider.getBlockNumber())
   const startDate = lastBlock.timestamp + 3600 * 48 // starts in 24 hours from current block
@@ -43,12 +44,14 @@ import { mnemonic } from '../secrets.json'
     minimumRaise: utils.parseEther('500'), // 70%
     tokenPrice: utils.parseEther('0.5'),
     tokenSupplier: saleCreator.address,
-    tokenOut: ADM_TOKEN,
-    tokenIn: WXDAI_TOKEN,
+    tokenOut: mesaToken.address,
+    tokenIn: WXDAI_ADDRESS,
     owner: saleCreator.address,
     startDate,
     endDate,
   })
 
   console.log(transactions)
+
+  // Play with the FixedPriceSale
 })()
