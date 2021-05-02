@@ -22,7 +22,18 @@
     "type": "git",
     "url": "git+https://github.com/cryptonative-ch/mesa-js.git"
   },
-  "keywords": [],
+  "files": [
+    "LICENSE.md",
+    "README.md",
+    "dist/"
+  ],
+  "keywords": [
+    "dxdao",
+    "mesa",
+    "ethereum",
+    "web3",
+    "DeFi"
+  ],
   "author": "Adam Azad <adam@adamazad.com> (https://adamazad.com/)",
   "license": "MIT",
   "bugs": {
