@@ -1,7 +1,8 @@
 {
   "name": "@dxdao/mesa",
-  "version": "1.0.0",
-  "description": "MesaJS gives developer access to the entire Mesa ecosystem a single package",
+  "version": "0.1.0",
+  "private": false,
+  "description": "MesaJS gives developers access to the entire Mesa ecosystem a single package",
   "main": "dist/index.js",
   "dependencies": {
     "@ethersproject/providers": "^5.1.2",
