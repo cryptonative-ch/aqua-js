@@ -15,7 +15,8 @@
   "devDependencies": {},
   "scripts": {
     "typechain": "typechain --target ethers-v5 --outDir src/contracts abis/*.json",
-    "build-abis": "build-abis.sh"
+    "build-abis": "build-abis.sh",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
