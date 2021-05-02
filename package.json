@@ -24,7 +24,7 @@
   },
   "keywords": [],
   "author": "Adam Azad <adam@adamazad.com> (https://adamazad.com/)",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/cryptonative-ch/mesa-js/issues"
   },
