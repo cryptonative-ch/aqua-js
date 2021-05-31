@@ -1,4 +1,4 @@
-# Create a `FixedPrice` Sale using MesaJS
+# Create a `FixedPrice` Sale
 
 This example demonstrates how to create a `FixedPrice` Sale using the Mesa contracts on xDAI.
 
