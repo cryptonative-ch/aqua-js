@@ -101,6 +101,7 @@ Launching new FixedPriceSale via MesaFactory
 
 4. Enjoy your token sale
 
+![Screenshot at 2021-06-01 13-19-23](https://user-images.githubusercontent.com/918180/120316048-48362100-c2dd-11eb-84f2-5c379eded151.png)
 
 
-5. revert change in create-fixed-price-sale.ts, with git checkout `create-fixed-price-sale.ts`
+5. Revert change in create-fixed-price-sale.ts, with `git checkout create-fixed-price-sale.ts`
