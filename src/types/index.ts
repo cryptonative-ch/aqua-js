@@ -7,7 +7,7 @@ import { MesaFactory, SaleLauncher, TemplateLauncher } from '../contracts'
 import type { Subgraph } from '../Subgraph'
 // Export
 export type { InitDataFairSaleOptions, InitDataFixedPriceSaleOptions } from './encoders'
-export type { FixedPriceSaleOptions } from './sales'
+export type { FairSaleOptions, FixedPriceSaleOptions } from './sales'
 export type {
   BooleanMap,
   DocumentTimestampFields,
