@@ -2,7 +2,7 @@
 
 This example demonstrates how to create a `FixedPrice` Sale using the Mesa contracts on xDAI.
 
-Creating a Sale using Mesa contract always involves two major trasnactions:
+Creating a Sale using Mesa contract always involves two major transaction:
 
 1. Launch a Sale Template from the `MesaFactory`.
 2. Launch the Sale from the `SaleTemplate`.
@@ -40,7 +40,7 @@ A Sale token is the token the Sale creator wishes to sell to potentials investor
 
 ## Launch the Sale from the `SaleLauncher`
 
-After the template is deployed, connect to it and call `createSale`. This transction requires sending the `saleFee` as value (the native currency of the network).
+After the template is deployed, connect to it and call `createSale`. This transaction requires sending the `saleFee` as value (the native currency of the network).
 
 ## Use The SDK
 
