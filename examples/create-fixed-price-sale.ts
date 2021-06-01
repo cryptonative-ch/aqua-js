@@ -24,10 +24,10 @@ import { Mesa, XDAI_CONFIG } from '../src'
   // total tokens for sale is 1000
   const tokensForSale = utils.parseEther('50')
   // Mint tokensForSale to saleCreator
-  await (await mesaToken.mint(saleCreator.address, tokensForSale)).wait(1)
+  await (await mesaToken.mint(saleCreator.address, tokensForSale)).wait(3)
   console.log(`Minted ${utils.formatEther(tokensForSale)} to ${saleCreator.address}`)
   // Approve saleLauncher by saleCreator
-  await (await mesaToken.approve(mesa.saleLauncher.address, ethers.constants.MaxUint256)).wait(1)
+  await (await mesaToken.approve(mesa.saleLauncher.address, ethers.constants.MaxUint256)).wait(3)
   console.log(`Approved Mesa.SaleLauncher to spend $${await mesaToken.symbol()}`)
   // Use the last block timestamp to set startDate and endDate
   const lastBlock = await provider.getBlock(await provider.getBlockNumber())
