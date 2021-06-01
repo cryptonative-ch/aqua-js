@@ -13,15 +13,18 @@ import {
   FixedPriceSale,
   SaleLauncher,
   MesaFactory,
+  FairSale__factory,
+  FairSale,
+  FairSaleTemplate__factory,
 } from './contracts'
 // ABI encoders
-import { encodeInitDataFixedPriceSale } from './encoders'
+import { encodeInitDataFairSale, encodeInitDataFixedPriceSale } from './encoders'
 // Errors
 import { MesaError, SaleTemplateNotRegistered } from './errors'
 // Subgraph
 import { Subgraph } from './Subgraph'
 // Types/Interfaces
-import { FixedPriceSaleOptions, MesaConfigMap } from './types'
+import { FairSaleOptions, FixedPriceSaleOptions, MesaConfigMap } from './types'
 
 interface MesaContracts {
   factory: MesaFactory
@@ -137,6 +140,50 @@ export class Mesa {
     return {
       fixedPriceSale: FixedPriceSale__factory.connect(newSaleAddress, this.provider),
       transactions,
+    }
+  }
+
+  /**
+   * Creates and launches a new FairSale through a multicall. Involves:
+   * - Fetch the FairSaleTemplate from the subgraph
+   * - Launch the a new template via `MesaFactory`
+   * - Initialize the Sale from the template
+   * @param saleOptions the sale options. See `FairSaleOptions`
+   * @returns `FairSale` instance
+   * @throws `SaleTemplateNotRegistered` if the template is not found
+   */
+  async createFairSale(
+    saleOptions: FairSaleOptions
+  ): Promise<{ fairSale: FairSale; transactions: ContractTransaction[] }> {
+    // Fetch the saleTemplateId
+    const saleTemplates = await this.subgraph.getSaleTemplates()
+    const fairSaleTemplate = saleTemplates.find(({ name }) => name == 'FairSaleTemplate')
+    if (!fairSaleTemplate) {
+      throw new SaleTemplateNotRegistered('Mesa: FixedPriceSaleTemplate is not registered')
+    }
+    // Encode sale data
+    const saleOptionsInitDataBytes = encodeInitDataFairSale({
+      ...saleOptions,
+      saleLauncher: this.saleLauncher.address,
+      saleTemplateId: fairSaleTemplate.id,
+    })
+    // Launch a new template
+    const launchTemplateTx = await this.factory.launchTemplate(fairSaleTemplate.id, saleOptionsInitDataBytes)
+    const launchTemplateTxRecipt = await launchTemplateTx.wait(3)
+    // Get the <Type>SaleTemplate address
+    const templateAddress = this.getLaunchedTemplateAddress(launchTemplateTxRecipt)
+    // Get the SaleTemplate address
+    const saleTemplate = FairSaleTemplate__factory.connect(templateAddress, this.provider)
+    // Sale fee
+    const createSaleTx = await saleTemplate.createSale({
+      value: await this.factory.saleFee(), // fetch the saleFee from the Factory
+    })
+    const createSaleTxReceipt = await createSaleTx.wait(3)
+    // Extract the newSale from logs
+    const newSaleAddress = `0x${createSaleTxReceipt.logs[0].topics[1].substring(26)}`
+    return {
+      fairSale: FairSale__factory.connect(newSaleAddress, this.provider),
+      transactions: [launchTemplateTx, createSaleTx],
     }
   }
 
