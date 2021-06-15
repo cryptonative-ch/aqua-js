@@ -12,9 +12,7 @@ If it is not then it will be closed as long as the threshold has been reached.
 
 ## Purchasers report
 
-THere is supposed to be an output of all addresses and how many tokens they purchased, but it currently has bugs and so should not be relied on (unless no).
-
-In future, more view methods should be added to contracts to allow for easier reporting (returning full array of addresses, etc).
+Calls xDai blockscout api to get all transactions from contract and displays them as urls to blockscout
 
 ## How to run create-fixed-price-sale.ts
 
