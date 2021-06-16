@@ -2,6 +2,8 @@
 
 This example demonstrates how to refund a `FixedPrice` Sale using the Mesa contracts on xDAI.
 
+> :warning: **This script automatically send funds to addresses**: Make sure you have funds and are certain this should be done!
+
 Steps:
 
 1. Get all transactions for associated contract via blockscout API
