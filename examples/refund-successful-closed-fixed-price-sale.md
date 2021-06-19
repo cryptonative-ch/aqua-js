@@ -1,8 +1,12 @@
-# Refund a `FixedPrice` Sale
+# Refund a closed `FixedPrice` Sale
 
 This example demonstrates how to refund a `FixedPrice` Sale using the Mesa contracts on xDAI.
 
-> :warning: **This script automatically send funds to addresses**: Make sure you have funds and are certain this should be done!
+This only works if a sale is successful and has been closed.
+
+Before running this please run the close-and-withdraw-fixed-price-sale.ts script for the sale.
+
+> **WARNING - This script automatically send funds to addresses**: Make sure you have closed and withdrawn sale and are certain this should be done!
 
 Steps:
 
