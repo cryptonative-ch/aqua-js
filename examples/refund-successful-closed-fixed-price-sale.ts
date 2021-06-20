@@ -11,7 +11,7 @@ import { mnemonic } from '../secrets.json'
 
 import { FixedPriceSale__factory } from '../src/contracts'
 
-const blockScoutUrl = 'https://blockscout.com/xdai/mainnet/'
+const blockScoutUrl = 'https://blockscout.com/xdai/mainnet'
 
 interface Purchaser {
   address: string
@@ -20,14 +20,14 @@ interface Purchaser {
 
 ;(async () => {
   const provider = new JsonRpcProvider(XDAI_RPC_ENDPOINT)
-  const [saleCreator] = getWallets(mnemonic, provider)
-  console.log(`Account being used: ${blockScoutUrl}address/${saleCreator.address}`)
+  const [saleInvestor] = getWallets(mnemonic, provider)
+  console.log(`Account being used: ${blockScoutUrl}/address/${saleInvestor.address}`)
   // Address of sale to close
   const saleAddress: string = process.argv[2]
-  console.log(`Sale Contract: ${blockScoutUrl}address/${saleAddress}`)
+  console.log(`Sale Contract: ${blockScoutUrl}/address/${saleAddress}`)
 
   // Get contract for sale with creator wallet
-  const saleContract = FixedPriceSale__factory.connect(saleAddress, saleCreator)
+  const saleContract = FixedPriceSale__factory.connect(saleAddress, saleInvestor)
 
   const isClosed = await saleContract.isClosed()
   const tokenPrice = parseFloat(utils.formatUnits(await saleContract.tokenPrice()))
@@ -35,12 +35,12 @@ interface Purchaser {
 
   // WXDAI/tokenIn contract
   const tokenInAddress = await saleContract.tokenIn()
-  const tokenInContract = new Contract(tokenInAddress, abi, saleCreator)
+  const tokenInContract = new Contract(tokenInAddress, abi, saleInvestor)
 
   const purchasersMap: { [id: string]: Purchaser } = {}
 
   if (isClosed) {
-    const transactions = await fetch(`${blockScoutUrl}api?module=account&address=${saleAddress}&action=txlist`)
+    const transactions = await fetch(`${blockScoutUrl}/api?module=account&address=${saleAddress}&action=txlist`)
       .then(res => res.json())
       .then(json => json.result)
 
