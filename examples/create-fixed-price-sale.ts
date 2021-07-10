@@ -42,14 +42,14 @@ import { Mesa, XDAI_CONFIG } from '../src'
       minCommitment: utils.parseEther('1'), // 1 WXDAI
       tokensForSale, // 50 FPST tokens for sale
       minRaise: utils.parseEther('30'), // 70% threshold
-      tokenPrice: utils.parseEther('0.5'), // 2 WXDAI / 1 FPST
+      tokenPrice: utils.parseEther('1'), // 2 WXDAI / 1 FPST
       tokenSupplier: saleCreator.address,
       tokenOut: mesaToken.address,
       tokenIn: WXDAI_ADDRESS,
       owner: saleCreator.address,
       startDate,
       endDate,
-      participantList: '0x0',
+      participantList: ethers.constants.AddressZero,
     },
     'bafybeibozpgzagp4opgu5ugmja2hpwdnyh675ofi44xobizpyr5gzqrxnu' // Example metadata IPFS hash
   )
