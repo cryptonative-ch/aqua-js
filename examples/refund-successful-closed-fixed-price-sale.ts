@@ -30,8 +30,6 @@ interface Purchaser {
   const saleContract = FixedPriceSale__factory.connect(saleAddress, saleInvestor)
 
   const isClosed = await saleContract.isClosed()
-  const tokenPrice = parseFloat(utils.formatUnits(await saleContract.tokenPrice()))
-  console.log({ tokenPrice })
 
   // WXDAI/tokenIn contract
   const tokenInAddress = await saleContract.tokenIn()
@@ -46,10 +44,8 @@ interface Purchaser {
 
     for (const transaction of transactions) {
       if (!purchasersMap[transaction.from]) {
-        // Currently tokensPurchase mapping has a bug, however this will find the correct amount of wxdai
-        // Will need changed in future release of fixed price contract
         const amount = parseFloat(utils.formatUnits(await saleContract.tokensPurchased(transaction.from)))
-        purchasersMap[transaction.from] = { address: transaction.from, amount: amount * tokenPrice }
+        purchasersMap[transaction.from] = { address: transaction.from, amount: amount }
       }
     }
 

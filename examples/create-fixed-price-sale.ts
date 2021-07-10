@@ -38,11 +38,11 @@ import { Mesa, XDAI_CONFIG } from '../src'
   // Create the sale
   const { fixedPriceSale, transactions } = await mesa.createFixedPriceSale(
     {
-      maxCommitment: utils.parseEther('5'),
-      minCommitment: utils.parseEther('1'),
-      tokensForSale,
+      maxCommitment: utils.parseEther('5'), // 5 WXDAI
+      minCommitment: utils.parseEther('1'), // 1 WXDAI
+      tokensForSale, // 50 FPST tokens for sale
       minRaise: utils.parseEther('30'), // 70% threshold
-      tokenPrice: utils.parseEther('0.5'),
+      tokenPrice: utils.parseEther('0.5'), // 2 WXDAI / 1 FPST
       tokenSupplier: saleCreator.address,
       tokenOut: mesaToken.address,
       tokenIn: WXDAI_ADDRESS,
@@ -51,7 +51,7 @@ import { Mesa, XDAI_CONFIG } from '../src'
       endDate,
       participantList: '0x0',
     },
-    'bafybeibozpgzagp4opgu5ugmja2hpwdnyh675ofi44xobizpyr5gzqrxnu'
+    'bafybeibozpgzagp4opgu5ugmja2hpwdnyh675ofi44xobizpyr5gzqrxnu' // Example metadata IPFS hash
   )
   // Logging
   console.log(transactions)
