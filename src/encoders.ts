@@ -11,7 +11,7 @@ export function encodeInitDataFairSale({
   saleTemplateId,
   tokenOut,
   tokenIn,
-  duration,
+  auctionEndDate,
   tokenOutSupply,
   minPrice,
   minBuyAmount,
@@ -25,7 +25,7 @@ export function encodeInitDataFairSale({
       saleTemplateId,
       tokenOut,
       tokenIn,
-      duration,
+      auctionEndDate,
       tokenOutSupply,
       minPrice,
       minBuyAmount,
@@ -45,10 +45,11 @@ export function encodeInitDataFixedPriceSale({
   tokensForSale,
   startDate,
   endDate,
-  allocationMin,
-  allocationMax,
-  minimumRaise,
+  minCommitment,
+  maxCommitment,
+  minRaise,
   owner,
+  participantList,
 }: InitDataFixedPriceSaleOptions): string {
   return utils.defaultAbiCoder.encode(
     [
@@ -76,10 +77,11 @@ export function encodeInitDataFixedPriceSale({
       tokensForSale,
       startDate,
       endDate,
-      allocationMin,
-      allocationMax,
-      minimumRaise,
+      minCommitment,
+      maxCommitment,
+      minRaise,
       owner,
+      participantList,
     ]
   )
 }

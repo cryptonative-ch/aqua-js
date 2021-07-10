@@ -18,17 +18,12 @@ export class FixedPriceSale__factory {
 
 const _abi = [
   {
-    inputs: [],
-    stateMutability: "nonpayable",
-    type: "constructor",
-  },
-  {
     anonymous: false,
     inputs: [
       {
         indexed: true,
         internalType: "address",
-        name: "buyer",
+        name: "user",
         type: "address",
       },
       {
@@ -38,7 +33,7 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "NewPurchase",
+    name: "NewCommitment",
     type: "event",
   },
   {
@@ -47,26 +42,7 @@ const _abi = [
       {
         indexed: true,
         internalType: "address",
-        name: "buyer",
-        type: "address",
-      },
-      {
-        indexed: true,
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
-    ],
-    name: "NewTokenClaim",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "buyer",
+        name: "user",
         type: "address",
       },
       {
@@ -77,6 +53,25 @@ const _abi = [
       },
     ],
     name: "NewTokenRelease",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "NewTokenWithdraw",
     type: "event",
   },
   {
@@ -127,36 +122,35 @@ const _abi = [
       {
         indexed: false,
         internalType: "uint256",
-        name: "allocationMin",
+        name: "minCommitment",
         type: "uint256",
       },
       {
         indexed: false,
         internalType: "uint256",
-        name: "allocationMax",
+        name: "maxCommitment",
         type: "uint256",
       },
       {
         indexed: false,
         internalType: "uint256",
-        name: "minimumRaise",
+        name: "minRaise",
         type: "uint256",
       },
-    ],
-    name: "SaleInitalized",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
       {
-        indexed: true,
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
+        indexed: false,
+        internalType: "address",
+        name: "owner",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "participantList",
+        type: "address",
       },
     ],
-    name: "distributeAllTokensLeft",
+    name: "SaleInitialized",
     type: "event",
   },
   {
@@ -192,48 +186,15 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "allocationMax",
+    name: "TEMPLATE_NAME",
     outputs: [
       {
-        internalType: "uint256",
+        internalType: "string",
         name: "",
-        type: "uint256",
+        type: "string",
       },
     ],
     stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "allocationMin",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
-    ],
-    name: "buyTokens",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "claimTokens",
-    outputs: [],
-    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -244,15 +205,27 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "distributeAllTokens",
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "commitTokens",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
-    inputs: [],
-    name: "endDate",
+    inputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    name: "commitment",
     outputs: [
       {
         internalType: "uint256",
@@ -278,7 +251,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "isClosed",
+    name: "isMinRaiseReached",
     outputs: [
       {
         internalType: "bool",
@@ -291,44 +264,12 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "minimumRaise",
+    name: "isSaleEnded",
     outputs: [
       {
-        internalType: "uint256",
+        internalType: "bool",
         name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    name: "orderOwners",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "ordersCount",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
+        type: "bool",
       },
     ],
     stateMutability: "view",
@@ -349,9 +290,106 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "releaseTokens",
-    outputs: [],
-    stateMutability: "nonpayable",
+    name: "remainingTokensForSale",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "saleInfo",
+    outputs: [
+      {
+        internalType: "contract IERC20",
+        name: "tokenIn",
+        type: "address",
+      },
+      {
+        internalType: "contract IERC20",
+        name: "tokenOut",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "tokenPrice",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "tokensForSale",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "startDate",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "endDate",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "minCommitment",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "maxCommitment",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "minRaise",
+        type: "uint256",
+      },
+      {
+        internalType: "bool",
+        name: "hasParticipantList",
+        type: "bool",
+      },
+      {
+        internalType: "address",
+        name: "participantList",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "saleStatus",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "tokensCommitted",
+        type: "uint256",
+      },
+      {
+        internalType: "bool",
+        name: "isClosed",
+        type: "bool",
+      },
+      {
+        internalType: "bool",
+        name: "saleSucceeded",
+        type: "bool",
+      },
+      {
+        internalType: "bool",
+        name: "initialized",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -368,151 +406,14 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "startDate",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "templateName",
-    outputs: [
-      {
-        internalType: "string",
-        name: "",
-        type: "string",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "tokenIn",
-    outputs: [
-      {
-        internalType: "contract IERC20",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "tokenOut",
-    outputs: [
-      {
-        internalType: "contract IERC20",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "tokenPrice",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "tokensForSale",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [
       {
         internalType: "address",
-        name: "",
+        name: "user",
         type: "address",
       },
     ],
-    name: "tokensPurchased",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "tokensRemaining",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "tokensSold",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "withdrawFunds",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "bytes",
-        name: "_data",
-        type: "bytes",
-      },
-    ],
-    name: "withdrawFundsWithParams",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "withdrawUnsoldFunds",
+    name: "withdrawTokens",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

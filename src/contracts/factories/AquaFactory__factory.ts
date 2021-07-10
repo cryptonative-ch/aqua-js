@@ -5,20 +5,51 @@
 import { Contract, Signer } from "ethers";
 import { Provider } from "@ethersproject/providers";
 
-import type { MesaFactory } from "../MesaFactory";
+import type { AquaFactory } from "../AquaFactory";
 
-export class MesaFactory__factory {
+export class AquaFactory__factory {
   static connect(
     address: string,
     signerOrProvider: Signer | Provider
-  ): MesaFactory {
-    return new Contract(address, _abi, signerOrProvider) as MesaFactory;
+  ): AquaFactory {
+    return new Contract(address, _abi, signerOrProvider) as AquaFactory;
   }
 }
 
 const _abi = [
   {
-    inputs: [],
+    inputs: [
+      {
+        internalType: "address",
+        name: "_feeManager",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "_feeTo",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "_templateManager",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "_templateFee",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_feeNumerator",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_saleFee",
+        type: "uint256",
+      },
+    ],
     stateMutability: "nonpayable",
     type: "constructor",
   },
@@ -41,12 +72,6 @@ const _abi = [
         indexed: false,
         internalType: "address",
         name: "templateManager",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "address",
-        name: "templateLauncher",
         type: "address",
       },
       {
@@ -81,7 +106,7 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "SetFeeManager",
+    name: "FeeManagerUpdated",
     type: "event",
   },
   {
@@ -94,7 +119,7 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "SetFeeNumerator",
+    name: "FeeNumeratorUpdated",
     type: "event",
   },
   {
@@ -107,7 +132,7 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "SetFeeTo",
+    name: "FeeToUpdated",
     type: "event",
   },
   {
@@ -120,7 +145,7 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "SetSaleFee",
+    name: "SaleFeeUpdated",
     type: "event",
   },
   {
@@ -133,33 +158,7 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "SetTemplateFee",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "templateLauncher",
-        type: "address",
-      },
-    ],
-    name: "SetTemplateLauncher",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "templateManager",
-        type: "address",
-      },
-    ],
-    name: "SetTemplateManager",
+    name: "TemplateFeeUpdated",
     type: "event",
   },
   {
@@ -182,6 +181,32 @@ const _abi = [
     type: "event",
   },
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "templateLauncher",
+        type: "address",
+      },
+    ],
+    name: "TemplateLauncherUpdated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "templateManager",
+        type: "address",
+      },
+    ],
+    name: "TemplateManagerUpdated",
+    type: "event",
+  },
+  {
     inputs: [
       {
         internalType: "uint256",
@@ -189,7 +214,7 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "allSales",
+    name: "allTemplates",
     outputs: [
       {
         internalType: "address",
@@ -253,46 +278,16 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [
+    inputs: [],
+    name: "initialized",
+    outputs: [
       {
-        internalType: "address",
-        name: "_feeManager",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "_feeTo",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "_templateManager",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "_templateLauncher",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "_templateFee",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "_feeNumerator",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "_saleFee",
-        type: "uint256",
+        internalType: "bool",
+        name: "",
+        type: "bool",
       },
     ],
-    name: "initialize",
-    outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -307,12 +302,17 @@ const _abi = [
         name: "_data",
         type: "bytes",
       },
+      {
+        internalType: "string",
+        name: "_metaData",
+        type: "string",
+      },
     ],
     name: "launchTemplate",
     outputs: [
       {
         internalType: "address",
-        name: "newSale",
+        name: "newTemplate",
         type: "address",
       },
     ],
@@ -321,7 +321,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "numberOfSales",
+    name: "numberOfTemplates",
     outputs: [
       {
         internalType: "uint256",
