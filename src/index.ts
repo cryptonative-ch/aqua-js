@@ -10,15 +10,15 @@ export * as encoders from './encoders'
 
 // Preconfigured map for quick bootstraping
 export const XDAI_CONFIG: MesaConfigMap = {
-  factory: '0xefb5490683bE4AE8de4bFB05a84Ef0F79d9DC2db',
-  saleLauncher: '0x646219EaE83eD7dff641332B36402350FA9a0CdA',
-  templateLauncher: '0x1C55a988E025492dDcf872CA68a8562dfEBAe5C9',
-  subgraph: 'https://api.thegraph.com/subgraphs/name/adamazad/mesa-xdai',
+  factory: '0x6897427e8d129d040F066a3Dcb106da91e84ab47',
+  saleLauncher: '0xfa4Fbd5DC4a0C3aE54aA3a1fE52099d7d6F94227',
+  templateLauncher: '0x1c1006D122A7f09A047f42D16464A3e7fBdB24C2',
+  subgraph: 'https://api.thegraph.com/subgraphs/name/adamazad/aqua-xdai-dev',
 }
 
 export const RINKEBY_CONFIG: MesaConfigMap = {
-  factory: '0xd0ab3620E1A592FD26E115EAcd59E6FE62C6c421',
-  saleLauncher: '0xF9008327125bB1315a4577F034E4FF5C81248d90',
-  templateLauncher: '0x2Fb3C82b749f806A954E2b41A1e692196be466a8',
+  factory: '0x6f90A6b92b69A775d0a2231011b3704d876b51a8',
+  saleLauncher: '0x6f90A6b92b69A775d0a2231011b3704d876b51a8',
+  templateLauncher: '0xA731dEc18bD791D817bd67E9944793D5BF76f5C0',
   subgraph: 'https://api.thegraph.com/subgraphs/name/adamazad/mesa',
 }

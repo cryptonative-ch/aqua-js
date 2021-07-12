@@ -5,7 +5,7 @@ export interface InitDataFairSaleOptions {
   saleTemplateId: BigNumberish
   tokenOut: string
   tokenIn: string
-  duration: BigNumberish
+  auctionEndDate: BigNumberish
   tokenOutSupply: BigNumberish
   minPrice: BigNumber
   minBuyAmount: BigNumber
@@ -23,8 +23,8 @@ export interface InitDataFixedPriceSaleOptions {
   tokensForSale: BigNumberish
   startDate: BigNumberish
   endDate: BigNumberish
-  allocationMin: BigNumberish
-  allocationMax: BigNumberish
-  minimumRaise: BigNumberish
-  owner: string
+  minCommitment: BigNumberish
+  maxCommitment: BigNumberish
+  minRaise: BigNumberish
+  participantList: boolean
 }

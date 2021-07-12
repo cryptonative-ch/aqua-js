@@ -25,10 +25,10 @@ const blockScoutUrl = 'https://blockscout.com/xdai/mainnet/'
 
   let isClosed = await saleContract.isClosed()
 
-  const tokenSold = await saleContract.tokensSold()
+  const tokenSold = await saleContract.tokensCommitted()
   console.log({ tokenSold: utils.formatEther(tokenSold) })
 
-  const minRaise = await saleContract.minimumRaise()
+  const minRaise = await saleContract.minRaise()
   console.log({ minRaise: utils.formatEther(minRaise) })
 
   // Display transactions from sale contract

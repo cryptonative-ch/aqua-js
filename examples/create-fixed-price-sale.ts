@@ -36,19 +36,23 @@ import { Mesa, XDAI_CONFIG } from '../src'
   // Start deploying the sale via the SDK
   console.log(`Launching new FixedPriceSale via MesaFactory`)
   // Create the sale
-  const { fixedPriceSale, transactions } = await mesa.createFixedPriceSale({
-    allocationMax: utils.parseEther('5'),
-    allocationMin: utils.parseEther('1'),
-    tokensForSale,
-    minimumRaise: utils.parseEther('30'), // 70% threshold
-    tokenPrice: utils.parseEther('0.5'),
-    tokenSupplier: saleCreator.address,
-    tokenOut: mesaToken.address,
-    tokenIn: WXDAI_ADDRESS,
-    owner: saleCreator.address,
-    startDate,
-    endDate,
-  })
+  const { fixedPriceSale, transactions } = await mesa.createFixedPriceSale(
+    {
+      maxCommitment: utils.parseEther('5'), // 5 WXDAI
+      minCommitment: utils.parseEther('1'), // 1 WXDAI
+      tokensForSale, // 50 FPST tokens for sale
+      minRaise: utils.parseEther('30'), // 70% threshold
+      tokenPrice: utils.parseEther('1'), // 2 WXDAI / 1 FPST
+      tokenSupplier: saleCreator.address,
+      tokenOut: mesaToken.address,
+      tokenIn: WXDAI_ADDRESS,
+      // owner: saleCreator.address,
+      startDate,
+      endDate,
+      participantList: false,
+    },
+    'bafybeibozpgzagp4opgu5ugmja2hpwdnyh675ofi44xobizpyr5gzqrxnu' // Example metadata IPFS hash
+  )
   // Logging
   console.log(transactions)
   console.log(fixedPriceSale.address)

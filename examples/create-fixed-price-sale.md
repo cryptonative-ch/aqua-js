@@ -1,15 +1,15 @@
 # Create a `FixedPrice` Sale
 
-This example demonstrates how to create a `FixedPrice` Sale using the Mesa contracts on xDAI.
+This example demonstrates how to create a `FixedPrice` Sale using the Aqua contracts on xDAI.
 
-Creating a Sale using Mesa contract always involves two major transaction:
+Creating a Sale using Aqua contract always involves two major transaction:
 
-1. Launch a Sale Template from the `MesaFactory`.
+1. Launch a Sale Template from the `AquaFactory`.
 2. Launch the Sale from the `SaleTemplate`.
 
-## Launch a SaleTemplate via the `MesaFactory`
+## Launch a SaleTemplate via the `AquaFactory`
 
-To launch a `SaleTemplate`, call `MesaFactory.launchTemplate`
+To launch a `SaleTemplate`, call `AquaFactory.launchTemplate`
 
 | Name          | Description                                    |
 | ------------- | ---------------------------------------------- |
@@ -22,8 +22,8 @@ Sale data `_data` has to be encoded an Bytes string. You can use `encodeInitData
 
 | Name            | Description                                        | Value                                                                                                               |
 | --------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `allocationMax` | Maximum number of token allocated to each investor | 5                                                                                                                   |
-| `allocationMin` | Minimum number of token allocated to each investor | 1                                                                                                                   |
+| `allocationMax` | Maximum number of tokenIn each investor is allowed to invest | 5                                                                                                                   |
+| `allocationMin` | Minimum number of tokenIn each investor is allowed to invest | 1                                                                                                                   |
 | `tokensForSale` | Number of tokens on Sale                           | 50                                                                                                                  |
 | `minimumRaise`  | Number of tokens to raise                          | 30 (60%)                                                                                                            |
 | `tokenPrice`    | Token price                                        | 0.5                                                                                                                 |
@@ -33,6 +33,7 @@ Sale data `_data` has to be encoded an Bytes string. You can use `encodeInitData
 | `owner`         | Address of Sale owner of the sale                  | `saleCreator`                                                                                                       |
 | `startDate`     | Unix timestamp at which the Sale opens             | Current block timestamp + 3 minutes                                                                                 |
 | `endDate`       | Unix timestamp at the Sale closes                  | Current block timestamp + 72 hours                                                                                  |
+| `participantList`       | Address for participant list                  |0x0                                                                                  |
 
 ### Approve `SaleLauncher` to Spend the Sale Token
 
@@ -62,7 +63,7 @@ The SDK combines all this into a single method `Mesa.createFixedPriceSale`. See 
 Deployed FPST 2 at 0x310c95Fd16094793666f17e32C94887cA3504D68
 Minted 50.0 to 0x6F736630D86FE714E8Ce02c68f431347789F9835
 Approved Mesa.SaleLauncher to spend $FPST 2
-Launching new FixedPriceSale via MesaFactory
+Launching new FixedPriceSale via AquaFactory
 [
   {
     nonce: 93,

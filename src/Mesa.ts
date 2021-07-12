@@ -8,11 +8,11 @@ import {
   TemplateLauncher__factory,
   FixedPriceSale__factory,
   SaleLauncher__factory,
-  MesaFactory__factory,
+  AquaFactory__factory,
   TemplateLauncher,
   FixedPriceSale,
   SaleLauncher,
-  MesaFactory,
+  AquaFactory,
 } from './contracts'
 // ABI encoders
 import { encodeInitDataFixedPriceSale } from './encoders'
@@ -24,13 +24,13 @@ import { Subgraph } from './Subgraph'
 import { FixedPriceSaleOptions, MesaConfigMap } from './types'
 
 interface MesaContracts {
-  factory: MesaFactory
+  factory: AquaFactory
   saleLauncher: SaleLauncher
   templateLauncher: TemplateLauncher
 }
 
 export class Mesa {
-  readonly factory: MesaFactory
+  readonly factory: AquaFactory
   readonly saleLauncher: SaleLauncher
   readonly templateLauncher: TemplateLauncher
   readonly subgraph: Subgraph
@@ -40,7 +40,7 @@ export class Mesa {
     { factory, saleLauncher, templateLauncher, subgraph }: MesaConfigMap,
     signerOrProvider: Signer | Provider
   ) {
-    this.factory = MesaFactory__factory.connect(factory, signerOrProvider)
+    this.factory = AquaFactory__factory.connect(factory, signerOrProvider)
     this.saleLauncher = SaleLauncher__factory.connect(saleLauncher, signerOrProvider)
     this.templateLauncher = TemplateLauncher__factory.connect(templateLauncher, signerOrProvider)
     this.subgraph = new Subgraph(subgraph)
@@ -49,7 +49,7 @@ export class Mesa {
 
   /**
    * Returns the three main contracts from the Mesa instance
-   * - MesaFactory
+   * - AquaFactory
    * - SaleLauncher
    * - TemplateLauncher
    * @returns `MesaContract`
@@ -91,7 +91,7 @@ export class Mesa {
   /**
    * Creates a new FixedPriceSale and returns the FixedPriceSale instance. Involves:
    * - Fetch the FixedPriceSaleTemplate from the subgraph
-   * - Launch the a new template via `MesaFactory`
+   * - Launch the a new template via `AquaFactory`
    * - Initialize the Sale from the template
    * @param mesa the Mesa instance
    * @param saleOptions the sale options. See `FixedPriceSaleOptions`
@@ -99,7 +99,8 @@ export class Mesa {
    * @throws `SaleTemplateNotRegistered` if the template is not found
    */
   async createFixedPriceSale(
-    saleOptions: FixedPriceSaleOptions
+    saleOptions: FixedPriceSaleOptions,
+    metaData: string
   ): Promise<{ fixedPriceSale: FixedPriceSale; transactions: ContractTransaction[] }> {
     // Store all transctions
     const transactions: ContractTransaction[] = []
@@ -116,7 +117,11 @@ export class Mesa {
       saleTemplateId: fixedPriceSaleTemplate.id,
     })
     // Launch a new template
-    const launchTemplateTx = await this.factory.launchTemplate(fixedPriceSaleTemplate.id, saleOptionsInitDataBytes)
+    const launchTemplateTx = await this.factory.launchTemplate(
+      fixedPriceSaleTemplate.id,
+      saleOptionsInitDataBytes,
+      metaData
+    )
     // Add to transctions
     transactions.push(launchTemplateTx)
     const launchTemplateTxRecipt = await launchTemplateTx.wait(2)

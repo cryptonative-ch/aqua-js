@@ -19,7 +19,7 @@
     "typescript": "^4.2.4"
   },
   "scripts": {
-    "typechain": "typechain --target ethers-v5 --outDir src/contracts abis/*.json",
+    "typechain": "typechain --target ethers-v5 --outDir src/contracts 'abis/*.json'",
     "build-abis": "build-abis.sh",
     "build": "tsc"
   },
