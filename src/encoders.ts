@@ -39,8 +39,8 @@ export function encodeInitDataFixedPriceSale({
   saleLauncher,
   saleTemplateId,
   tokenSupplier,
-  tokenOut,
   tokenIn,
+  tokenOut,
   tokenPrice,
   tokensForSale,
   startDate,
@@ -48,7 +48,6 @@ export function encodeInitDataFixedPriceSale({
   minCommitment,
   maxCommitment,
   minRaise,
-  owner,
   participantList,
 }: InitDataFixedPriceSaleOptions): string {
   return utils.defaultAbiCoder.encode(
@@ -65,14 +64,14 @@ export function encodeInitDataFixedPriceSale({
       'uint256',
       'uint256',
       'uint256',
-      'address',
+      'bool',
     ],
     [
       saleLauncher,
       saleTemplateId,
       tokenSupplier,
-      tokenOut,
       tokenIn,
+      tokenOut,
       tokenPrice,
       tokensForSale,
       startDate,
@@ -80,7 +79,6 @@ export function encodeInitDataFixedPriceSale({
       minCommitment,
       maxCommitment,
       minRaise,
-      owner,
       participantList,
     ]
   )

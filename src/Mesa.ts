@@ -116,20 +116,26 @@ export class Mesa {
       saleLauncher: this.saleLauncher.address,
       saleTemplateId: fixedPriceSaleTemplate.id,
     })
+    console.log({ saleOptionsInitDataBytes })
+    console.log(fixedPriceSaleTemplate.id)
     // Launch a new template
     const launchTemplateTx = await this.factory.launchTemplate(
       fixedPriceSaleTemplate.id,
       saleOptionsInitDataBytes,
       metaData
     )
+    console.log({ launchTemplateTx })
     // Add to transctions
     transactions.push(launchTemplateTx)
     const launchTemplateTxRecipt = await launchTemplateTx.wait(2)
+    console.log({ launchTemplateTxRecipt })
     // Get the <Type>SaleTemplate address
     const templateAddress = this.getLaunchedTemplateAddress(launchTemplateTxRecipt)
+    console.log({ templateAddress })
     // Get the SaleTemplate address
     const saleTemplate = FixedPriceSaleTemplate__factory.connect(templateAddress, this.provider)
     // Sale fee
+    console.log({ saleTemplate })
     const createSaleTx = await saleTemplate.createSale({
       value: await this.factory.saleFee(), // fetch the saleFee from the Factory
     })

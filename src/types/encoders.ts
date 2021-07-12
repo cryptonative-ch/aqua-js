@@ -26,6 +26,5 @@ export interface InitDataFixedPriceSaleOptions {
   minCommitment: BigNumberish
   maxCommitment: BigNumberish
   minRaise: BigNumberish
-  owner: string
-  participantList: string
+  participantList: boolean
 }
