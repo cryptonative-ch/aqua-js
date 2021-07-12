@@ -46,10 +46,10 @@ import { Mesa, XDAI_CONFIG } from '../src'
       tokenSupplier: saleCreator.address,
       tokenOut: mesaToken.address,
       tokenIn: WXDAI_ADDRESS,
-      owner: saleCreator.address,
+      // owner: saleCreator.address,
       startDate,
       endDate,
-      participantList: ethers.constants.AddressZero,
+      participantList: false,
     },
     'bafybeibozpgzagp4opgu5ugmja2hpwdnyh675ofi44xobizpyr5gzqrxnu' // Example metadata IPFS hash
   )
