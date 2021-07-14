@@ -13,7 +13,7 @@ export const XDAI_CONFIG: MesaConfigMap = {
   factory: '0x6897427e8d129d040F066a3Dcb106da91e84ab47',
   saleLauncher: '0xfa4Fbd5DC4a0C3aE54aA3a1fE52099d7d6F94227',
   templateLauncher: '0x1c1006D122A7f09A047f42D16464A3e7fBdB24C2',
-  subgraph: 'https://api.thegraph.com/subgraphs/name/adamazad/aqua-xdai-dev',
+  subgraph: 'https://api.thegraph.com/subgraphs/name/adamazad/aqua-xdai-next',
 }
 
 export const RINKEBY_CONFIG: MesaConfigMap = {
