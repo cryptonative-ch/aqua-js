@@ -2,7 +2,7 @@
 import type { Provider } from '@ethersproject/providers'
 import type { Signer } from 'ethers'
 // Contracts
-import { AquaFactory, SaleLauncher, TemplateLauncher } from '../contracts'
+import type { AquaFactory, SaleLauncher, TemplateLauncher } from '../contracts'
 // Subgraph
 import type { Subgraph } from '../Subgraph'
 // Export
@@ -33,23 +33,23 @@ export interface MesaContracts {
   templateLauncher: TemplateLauncher
 }
 
-export interface MesaInstance<P = Provider | Signer> {
+export interface AquaInstance<P = Provider | Signer> {
   contracts: MesaContracts
   subgraph: Subgraph
   provider: P
 }
 
 export interface AddSaleOptions {
-  mesa: MesaInstance
+  mesa: AquaInstance
   sale: string
 }
 
 export interface AddTemplateOptions {
-  mesa: MesaInstance
+  mesa: AquaInstance
   template: string
 }
 
-export interface MesaConfigMap {
+export interface AquaConfigMap {
   factory: string
   saleLauncher: string
   templateLauncher: string

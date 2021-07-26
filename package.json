@@ -1,5 +1,5 @@
 {
-  "name": "@dxdao/mesa",
+  "name": "@dxdao/aqua",
   "version": "0.1.3",
   "private": false,
   "description": "MesaJS gives developers access to the entire Mesa ecosystem a single package",
@@ -36,6 +36,7 @@
   "keywords": [
     "dxdao",
     "mesa",
+    "aqua",
     "ethereum",
     "web3",
     "DeFi"
@@ -45,5 +46,6 @@
   "bugs": {
     "url": "https://github.com/cryptonative-ch/mesa-js/issues"
   },
-  "homepage": "https://github.com/cryptonative-ch/mesa-js#readme"
+  "homepage": "https://github.com/cryptonative-ch/mesa-js#readme",
+  "types": "types/index.d.ts"
 }
