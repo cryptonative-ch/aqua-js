@@ -7,6 +7,7 @@ export * from './Subgraph'
 export * from './types'
 // Export ABI encoders
 export * as encoders from './encoders'
+export * from './contracts'
 
 // Preconfigured map for quick bootstraping
 export const XDAI_CONFIG: MesaConfigMap = {
