@@ -2,5 +2,7 @@
  * When a template does not exist or not registered in the TemplateLauncher
  */
 
-export class MesaError extends Error {}
-export class SaleTemplateNotRegistered extends MesaError {}
+export class AquaError extends Error {
+  name: string = 'AquaError'
+}
+export class SaleTemplateNotRegistered extends AquaError {}

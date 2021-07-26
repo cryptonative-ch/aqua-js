@@ -4,6 +4,14 @@
 import { Provider } from '@ethersproject/providers'
 import { Contract, Signer } from 'ethers'
 
+export type { TemplateLauncher } from './TemplateLauncher'
+export type { SaleLauncher } from './SaleLauncher'
+export type { AquaFactory } from './AquaFactory'
+export type { FixedPriceSaleTemplate } from './FixedPriceSaleTemplate'
+export type { FairSaleTemplate } from './FairSaleTemplate'
+export type { FixedPriceSale } from './FixedPriceSale'
+export type { FairSale } from './FairSale'
+
 import type { TemplateLauncher as TemplateLauncherClass } from './TemplateLauncher'
 import type { SaleLauncher as SaleLauncherClass } from './SaleLauncher'
 import type { AquaFactory as AquaFactoryClass } from './AquaFactory'

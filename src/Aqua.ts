@@ -3,33 +3,23 @@ import { ContractReceipt, ContractTransaction } from 'ethers'
 import { Provider } from '@ethersproject/abstract-provider'
 import { Signer } from '@ethersproject/abstract-signer'
 // Contracts
-import {
-  FixedPriceSaleTemplate__factory,
-  TemplateLauncher__factory,
-  FixedPriceSale__factory,
-  SaleLauncher__factory,
-  AquaFactory__factory,
-  TemplateLauncher,
-  FixedPriceSale,
-  SaleLauncher,
-  AquaFactory,
-} from './contracts'
+import { AquaFactory, Contracts, FixedPriceSale, SaleLauncher, TemplateLauncher } from './contracts'
 // ABI encoders
 import { encodeInitDataFixedPriceSale } from './encoders'
 // Errors
-import { MesaError, SaleTemplateNotRegistered } from './errors'
+import { AquaError, SaleTemplateNotRegistered } from './errors'
 // Subgraph
 import { Subgraph } from './Subgraph'
 // Types/Interfaces
-import { FixedPriceSaleOptions, MesaConfigMap } from './types'
+import { FixedPriceSaleOptions, AquaConfigMap } from './types'
 
-interface MesaContracts {
+interface AquaContracts {
   factory: AquaFactory
   saleLauncher: SaleLauncher
   templateLauncher: TemplateLauncher
 }
 
-export class Mesa {
+export class Aqua {
   readonly factory: AquaFactory
   readonly saleLauncher: SaleLauncher
   readonly templateLauncher: TemplateLauncher
@@ -37,12 +27,12 @@ export class Mesa {
   readonly provider: Signer | Provider
 
   constructor(
-    { factory, saleLauncher, templateLauncher, subgraph }: MesaConfigMap,
+    { factory, saleLauncher, templateLauncher, subgraph }: AquaConfigMap,
     signerOrProvider: Signer | Provider
   ) {
-    this.factory = AquaFactory__factory.connect(factory, signerOrProvider)
-    this.saleLauncher = SaleLauncher__factory.connect(saleLauncher, signerOrProvider)
-    this.templateLauncher = TemplateLauncher__factory.connect(templateLauncher, signerOrProvider)
+    this.factory = Contracts.AquaFactory.connect(factory, signerOrProvider)
+    this.saleLauncher = Contracts.SaleLauncher.connect(saleLauncher, signerOrProvider)
+    this.templateLauncher = Contracts.TemplateLauncher.connect(templateLauncher, signerOrProvider)
     this.subgraph = new Subgraph(subgraph)
     this.provider = signerOrProvider
   }
@@ -54,7 +44,7 @@ export class Mesa {
    * - TemplateLauncher
    * @returns `MesaContract`
    */
-  contracts(): MesaContracts {
+  contracts(): AquaContracts {
     return {
       factory: this.factory,
       saleLauncher: this.saleLauncher,
@@ -93,10 +83,6 @@ export class Mesa {
    * - Fetch the FixedPriceSaleTemplate from the subgraph
    * - Launch the a new template via `AquaFactory`
    * - Initialize the Sale from the template
-   * @param mesa the Mesa instance
-   * @param saleOptions the sale options. See `FixedPriceSaleOptions`
-   * @returns `FixedPriceSale` instance
-   * @throws `SaleTemplateNotRegistered` if the template is not found
    */
   async createFixedPriceSale(
     saleOptions: FixedPriceSaleOptions,
@@ -128,7 +114,7 @@ export class Mesa {
     // Get the <Type>SaleTemplate address
     const templateAddress = this.getLaunchedTemplateAddress(launchTemplateTxRecipt)
     // Get the SaleTemplate address
-    const saleTemplate = FixedPriceSaleTemplate__factory.connect(templateAddress, this.provider)
+    const saleTemplate = Contracts.FixedPriceSaleTemplate.connect(templateAddress, this.provider)
     // Sale fee
     const createSaleTx = await saleTemplate.createSale({
       value: await this.factory.saleFee(), // fetch the saleFee from the Factory
@@ -140,7 +126,7 @@ export class Mesa {
     // Extract the newSale from logs
     const newSaleAddress = `0x${createSaleTxReceipt.logs[0].topics[1].substring(26)}`
     return {
-      fixedPriceSale: FixedPriceSale__factory.connect(newSaleAddress, this.provider),
+      fixedPriceSale: Contracts.FixedPriceSale.connect(newSaleAddress, this.provider),
       transactions,
     }
   }
@@ -152,7 +138,7 @@ export class Mesa {
   getLaunchedTemplateAddress(transctionReceipt: ContractReceipt): string {
     // Extract the new SaleTemplate address from TemplateLaunched event
     if (!transctionReceipt.events) {
-      throw new MesaError('Transction did not emit any event')
+      throw new AquaError('Transction did not emit any event')
     }
     // Filter TemplateLaunched
     const eventTemplateLaunched = transctionReceipt.events.find(
@@ -160,7 +146,7 @@ export class Mesa {
     )
     // Event was not found
     if (!eventTemplateLaunched || !eventTemplateLaunched.args) {
-      throw new MesaError('Transction did not emit any event TemplateLaunched')
+      throw new AquaError('Transction did not emit any event TemplateLaunched')
     }
 
     return eventTemplateLaunched.args.template as string
