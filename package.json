@@ -45,5 +45,6 @@
   "bugs": {
     "url": "https://github.com/cryptonative-ch/mesa-js/issues"
   },
-  "homepage": "https://github.com/cryptonative-ch/mesa-js#readme"
+  "homepage": "https://github.com/cryptonative-ch/mesa-js#readme",
+  "types": "types/index.d.ts"
 }
