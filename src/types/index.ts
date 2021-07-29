@@ -7,7 +7,7 @@ import type { AquaFactory, SaleLauncher, TemplateLauncher } from '../contracts'
 import type { Subgraph } from '../Subgraph'
 // Export
 export type { InitDataFairSaleOptions, InitDataFixedPriceSaleOptions } from './encoders'
-export type { FixedPriceSaleOptions } from './sales'
+export type { FixedPriceSaleOptions, FairPriceSaleOptions } from './sales'
 export type {
   BooleanMap,
   DocumentTimestampFields,

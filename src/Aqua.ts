@@ -5,13 +5,13 @@ import { Signer } from '@ethersproject/abstract-signer'
 // Contracts
 import { AquaFactory, Contracts, FixedPriceSale, SaleLauncher, TemplateLauncher } from './contracts'
 // ABI encoders
-import { encodeInitDataFixedPriceSale } from './encoders'
+import { encodeInitDataFixedPriceSale, encodeInitDataFairSale } from './encoders'
 // Errors
 import { AquaError, SaleTemplateNotRegistered } from './errors'
 // Subgraph
 import { Subgraph } from './Subgraph'
 // Types/Interfaces
-import { FixedPriceSaleOptions, AquaConfigMap } from './types'
+import { FixedPriceSaleOptions, FairPriceSaleOptions, AquaConfigMap } from './types'
 
 interface AquaContracts {
   factory: AquaFactory
@@ -108,6 +108,62 @@ export class Aqua {
       saleOptionsInitDataBytes,
       metaData
     )
+    // Add to transctions
+    transactions.push(launchTemplateTx)
+    const launchTemplateTxRecipt = await launchTemplateTx.wait(2)
+    // Get the <Type>SaleTemplate address
+    const templateAddress = this.getLaunchedTemplateAddress(launchTemplateTxRecipt)
+    // Get the SaleTemplate address
+    const saleTemplate = Contracts.FixedPriceSaleTemplate.connect(templateAddress, this.provider)
+    // Sale fee
+    const createSaleTx = await saleTemplate.createSale({
+      value: await this.factory.saleFee(), // fetch the saleFee from the Factory
+    })
+    // Add to transactions
+    transactions.push(createSaleTx)
+    const createSaleTxReceipt = await createSaleTx.wait(3)
+    // Add to transctions
+    // Extract the newSale from logs
+    const newSaleAddress = `0x${createSaleTxReceipt.logs[0].topics[1].substring(26)}`
+    return {
+      fixedPriceSale: Contracts.FixedPriceSale.connect(newSaleAddress, this.provider),
+      transactions,
+    }
+  }
+
+  async createSale(
+    saleOptions: FixedPriceSaleOptions | FairPriceSaleOptions,
+    templateName: string,
+    metaData: string
+  ): Promise<{ fixedPriceSale: FixedPriceSale; transactions: ContractTransaction[] }> {
+    // Store all transctions
+    const transactions: ContractTransaction[] = []
+    // Fetch the saleTemplateId
+    const saleTemplates = await this.subgraph.getSaleTemplates()
+    const template = saleTemplates.find(({ name }) => name == templateName)
+    if (!template) {
+      throw new SaleTemplateNotRegistered(`Aqua: ${templateName} is not registered`)
+    }
+    // Encode sale data
+    var saleOptionsInitDataBytes = null
+    if (templateName === 'FixedPriceSaleTemplate') {
+      saleOptionsInitDataBytes = encodeInitDataFixedPriceSale({
+        ...(<FixedPriceSaleOptions>saleOptions),
+        saleLauncher: this.saleLauncher.address,
+        saleTemplateId: template.id,
+      })
+    } else if (templateName === 'FairSaleTemplate') {
+      saleOptionsInitDataBytes = encodeInitDataFairSale({
+        ...(<FairPriceSaleOptions>saleOptions),
+        saleLauncher: this.saleLauncher.address,
+        saleTemplateId: template.id,
+      })
+    } else {
+      throw new AquaError(`No matching encoder found for ${templateName}`)
+    }
+
+    // Launch a new template
+    const launchTemplateTx = await this.factory.launchTemplate(template.id, saleOptionsInitDataBytes, metaData)
     // Add to transctions
     transactions.push(launchTemplateTx)
     const launchTemplateTxRecipt = await launchTemplateTx.wait(2)

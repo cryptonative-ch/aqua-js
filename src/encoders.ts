@@ -11,25 +11,42 @@ export function encodeInitDataFairSale({
   saleTemplateId,
   tokenOut,
   tokenIn,
-  auctionEndDate,
-  tokenOutSupply,
+  duration,
+  tokensForSale,
   minPrice,
   minBuyAmount,
   minRaise,
+  orderCancellationPeriodDuration,
+  minimumBiddingAmountPerOrder,
   tokenSupplier,
-}: InitDataFairSaleOptions): string {
+}: InitDataFairSaleOptions) {
   return utils.defaultAbiCoder.encode(
-    ['address', 'uint256', 'address', 'address', 'uint256', 'uint256', 'uint96', 'uint96', 'uint256', 'address'],
+    [
+      'address',
+      'uint256',
+      'address',
+      'address',
+      'uint256',
+      'uint256',
+      'uint96',
+      'uint96',
+      'uint256',
+      'uint256',
+      'uint256',
+      'address',
+    ],
     [
       saleLauncher,
       saleTemplateId,
       tokenOut,
       tokenIn,
-      auctionEndDate,
-      tokenOutSupply,
+      duration,
+      tokensForSale,
       minPrice,
       minBuyAmount,
       minRaise,
+      orderCancellationPeriodDuration,
+      minimumBiddingAmountPerOrder,
       tokenSupplier,
     ]
   )
@@ -49,7 +66,7 @@ export function encodeInitDataFixedPriceSale({
   maxCommitment,
   minRaise,
   participantList,
-}: InitDataFixedPriceSaleOptions): string {
+}: InitDataFixedPriceSaleOptions) {
   return utils.defaultAbiCoder.encode(
     [
       'address',
