@@ -141,6 +141,7 @@ export class Aqua {
     // Fetch the saleTemplateId
     const saleTemplates = await this.subgraph.getSaleTemplates()
     const template = saleTemplates.find(({ name }) => name == templateName)
+    console.log({ template })
     if (!template) {
       throw new SaleTemplateNotRegistered(`Aqua: ${templateName} is not registered`)
     }
@@ -161,17 +162,29 @@ export class Aqua {
     } else {
       throw new AquaError(`No matching encoder found for ${templateName}`)
     }
+    console.log({ saleOptionsInitDataBytes })
 
     // Launch a new template
     const launchTemplateTx = await this.factory.launchTemplate(template.id, saleOptionsInitDataBytes, metaData)
+    console.log({ launchTemplateTx })
     // Add to transctions
     transactions.push(launchTemplateTx)
     const launchTemplateTxRecipt = await launchTemplateTx.wait(2)
     // Get the <Type>SaleTemplate address
     const templateAddress = this.getLaunchedTemplateAddress(launchTemplateTxRecipt)
+    console.log({ templateAddress })
     // Get the SaleTemplate address
-    const saleTemplate = Contracts.FixedPriceSaleTemplate.connect(templateAddress, this.provider)
-    // Sale fee
+    var saleTemplate
+    if (templateName === 'FixedPriceSaleTemplate') {
+      saleTemplate = Contracts.FixedPriceSaleTemplate.connect(templateAddress, this.provider)
+    } else if (templateName === 'FairSaleTemplate') {
+      saleTemplate = Contracts.FairSaleTemplate.connect(templateAddress, this.provider)
+    } else {
+      throw new AquaError(`No matching encoder found for ${templateName}`)
+    }
+    console.log('creating sale')
+    console.log({ saleTemplate })
+    // const saleTemplate = Contracts.FairSaleTemplate.connect(templateAddress, this.provider)
     const createSaleTx = await saleTemplate.createSale({
       value: await this.factory.saleFee(), // fetch the saleFee from the Factory
     })

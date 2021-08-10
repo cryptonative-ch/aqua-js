@@ -10,7 +10,7 @@ export interface InitDataFairSaleOptions {
   minPrice: BigNumber
   minBuyAmount: BigNumber
   minRaise: BigNumber
-  orderCancellationPeriodDuration: BigNumberish
+  orderCancelationPeriodDuration: BigNumberish
   minimumBiddingAmountPerOrder: BigNumber
   tokenSupplier: string
 }

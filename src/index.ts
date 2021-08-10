@@ -11,9 +11,9 @@ export * from './contracts'
 
 // Preconfigured map for quick bootstraping
 export const XDAI_CONFIG: AquaConfigMap = {
-  factory: '0x6897427e8d129d040F066a3Dcb106da91e84ab47',
-  saleLauncher: '0xfa4Fbd5DC4a0C3aE54aA3a1fE52099d7d6F94227',
-  templateLauncher: '0x1c1006D122A7f09A047f42D16464A3e7fBdB24C2',
+  factory: '0x0f1997E82cd484a54551b54009DdcE39deaE973f',
+  saleLauncher: '0xC28c613f0f0b85C745AC58BA78071816Cb52B43A',
+  templateLauncher: '0x58c67b46c47f69d63aa09d5f822ede377c479d5f',
   subgraph: 'https://api.thegraph.com/subgraphs/name/adamazad/aqua-xdai-next',
 }
 

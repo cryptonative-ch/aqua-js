@@ -16,7 +16,7 @@ export function encodeInitDataFairSale({
   minPrice,
   minBuyAmount,
   minRaise,
-  orderCancellationPeriodDuration,
+  orderCancelationPeriodDuration,
   minimumBiddingAmountPerOrder,
   tokenSupplier,
 }: InitDataFairSaleOptions) {
@@ -45,7 +45,7 @@ export function encodeInitDataFairSale({
       minPrice,
       minBuyAmount,
       minRaise,
-      orderCancellationPeriodDuration,
+      orderCancelationPeriodDuration,
       minimumBiddingAmountPerOrder,
       tokenSupplier,
     ]

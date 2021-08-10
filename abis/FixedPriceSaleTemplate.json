@@ -22,7 +22,7 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "duration",
+        "name": "tokenPrice",
         "type": "uint256"
       },
       {
@@ -33,15 +33,27 @@
       },
       {
         "indexed": false,
-        "internalType": "uint96",
-        "name": "minPrice",
-        "type": "uint96"
+        "internalType": "uint256",
+        "name": "startDate",
+        "type": "uint256"
       },
       {
         "indexed": false,
-        "internalType": "uint96",
-        "name": "minBuyAmount",
-        "type": "uint96"
+        "internalType": "uint256",
+        "name": "endDate",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "minCommitment",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "maxCommitment",
+        "type": "uint256"
       },
       {
         "indexed": false,
@@ -51,15 +63,9 @@
       },
       {
         "indexed": false,
-        "internalType": "uint256",
-        "name": "orderCancelationPeriodDuration",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "minimumBiddingAmountPerOrder",
-        "type": "uint256"
+        "internalType": "bool",
+        "name": "participantList",
+        "type": "bool"
       }
     ],
     "name": "TemplateInitialized",
@@ -177,6 +183,32 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "templateLauncher",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "templateManager",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
     "stateMutability": "view",

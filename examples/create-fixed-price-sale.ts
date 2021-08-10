@@ -33,16 +33,16 @@ import { Aqua, XDAI_CONFIG } from '../src'
   // Use the last block timestamp to set startDate and endDate
   const lastBlock = await provider.getBlock(await provider.getBlockNumber())
   const startDate = lastBlock.timestamp + 180 // starts in 3 minutes from current block
-  const endDate = startDate + 3600 * 72 // lasts for 72 hours
+  const endDate = startDate + 3600 * 1 // lasts for 72 hours
   // Start deploying the sale via the SDK
   console.log(`Launching new FixedPriceSale via MesaFactory`)
   // Create the sale
   const { fixedPriceSale, transactions } = await mesa.createFixedPriceSale(
     {
       maxCommitment: utils.parseEther('5'), // 5 WXDAI
-      minCommitment: utils.parseEther('1'), // 1 WXDAI
+      minCommitment: utils.parseEther('0.1'), // 1 WXDAI
       tokensForSale, // 50 FPST tokens for sale
-      minRaise: utils.parseEther('30'), // 70% threshold
+      minRaise: utils.parseEther('40'), // 70% threshold
       tokenPrice: utils.parseEther('10'), // 2 WXDAI / 1 FPST
       tokenSupplier: saleCreator.address,
       tokenOut: mesaToken.address,
