@@ -19,12 +19,21 @@ interface AquaContracts {
   templateLauncher: TemplateLauncher
 }
 
+interface CreateSaleReturn<T> {
+  sale: T
+  transactions: ContractTransaction[]
+}
+
 export class Aqua {
   readonly factory: AquaFactory
   readonly saleLauncher: SaleLauncher
   readonly templateLauncher: TemplateLauncher
   readonly subgraph: Subgraph
   readonly provider: Signer | Provider
+  /**
+   * Number of confirmation for all transactions
+   */
+  confirmationNumber: number
 
   constructor(
     { factory, saleLauncher, templateLauncher, subgraph }: AquaConfigMap,
@@ -35,6 +44,7 @@ export class Aqua {
     this.templateLauncher = Contracts.TemplateLauncher.connect(templateLauncher, signerOrProvider)
     this.subgraph = new Subgraph(subgraph)
     this.provider = signerOrProvider
+    this.confirmationNumber = 3
   }
 
   /**
@@ -61,7 +71,7 @@ export class Aqua {
    */
   async addSaleModule(saleAddress: string) {
     const addTemplateTx = await this.saleLauncher.addTemplate(saleAddress)
-    const addTemplateTxReceipt = addTemplateTx.wait(1)
+    const addTemplateTxReceipt = addTemplateTx.wait(this.confirmationNumber)
     return addTemplateTxReceipt
   }
 
