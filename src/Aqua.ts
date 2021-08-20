@@ -25,10 +25,25 @@ interface CreateSaleReturn<T> {
 }
 
 export class Aqua {
+  /**
+   * `AquaFactory` contract instance
+   */
   readonly factory: AquaFactory
+  /**
+   * `SaleLauncher` contract instance
+   */
   readonly saleLauncher: SaleLauncher
+  /**
+   * `TemplateLauncher` contract instance
+   */
   readonly templateLauncher: TemplateLauncher
+  /**
+   * Subgraph instance
+   */
   readonly subgraph: Subgraph
+  /**
+   * Signer to be used for all transactions
+   */
   readonly provider: Signer | Provider
   /**
    * Number of confirmation for all transactions
@@ -63,8 +78,7 @@ export class Aqua {
   }
 
   /**
-   * Adds a new Sale contract (module) to SaleLauncher contract
-   * @param mesa the Mesa instance
+   * Adds a new Sale contract (module) to `SaleLauncher` contract
    * @param saleAddress <SaleType>Template contract address
    * @returns `ContractReceipt`
    * @throws any
