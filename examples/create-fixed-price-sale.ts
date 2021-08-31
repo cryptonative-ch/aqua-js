@@ -42,8 +42,8 @@ import { Aqua, XDAI_CONFIG } from '../src'
       maxCommitment: utils.parseEther('5'), // 5 WXDAI
       minCommitment: utils.parseEther('0.1'), // 1 WXDAI
       tokensForSale, // 50 FPST tokens for sale
-      minRaise: utils.parseEther('40'), // 70% threshold
-      tokenPrice: utils.parseEther('10'), // 2 WXDAI / 1 FPST
+      minRaise: utils.parseEther('40'), // 80% threshold
+      tokenPrice: utils.parseEther('10'),
       tokenSupplier: saleCreator.address,
       tokenOut: mesaToken.address,
       tokenIn: WXDAI_ADDRESS,
