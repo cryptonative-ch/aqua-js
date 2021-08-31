@@ -44,7 +44,7 @@ import { Aqua, RINKEBY_CONFIG } from '../src'
       auctionStartDate: startDate,
       auctionEndDate: endDate,
       orderCancelationPeriodDuration: endDate,
-      tokensForSale: utils.parseEther('50'), // 50 FPST tokens for sale
+      tokensForSale,
       minRaise: utils.parseEther('5'), // 70% threshold
       minPrice: utils.parseEther('1'), // 70% threshold
       minBuyAmount: utils.parseEther('0.1'),
