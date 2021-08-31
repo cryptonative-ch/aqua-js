@@ -5,7 +5,8 @@ export interface InitDataFairSaleOptions {
   saleTemplateId: BigNumberish
   tokenOut: string
   tokenIn: string
-  duration: BigNumberish
+  auctionStartDate: BigNumberish
+  auctionEndDate: BigNumberish
   tokensForSale: BigNumber
   minPrice: BigNumber
   minBuyAmount: BigNumber

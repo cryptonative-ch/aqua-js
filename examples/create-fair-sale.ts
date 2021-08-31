@@ -19,10 +19,6 @@ import { Aqua, RINKEBY_CONFIG } from '../src'
   // Start aqua instance
   const aqua = new Aqua(RINKEBY_CONFIG, saleCreator)
   const ERC20MintableFactory = new ContractFactory(abi, bytecode, saleCreator)
-
-  const contract = new ethers.Contract('0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa', abi, saleCreator)
-  await (await contract.approve('0x2acfcda314d071bd3d95621932cf8e74a4ddef24', ethers.constants.MaxUint256)).wait(3)
-  console.log(`Approved 0x2acfcda314d071bd3d95621932cf8e74a4ddef24 to spend 0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa`)
   // Deploy example tokens
   const mesaToken = await ERC20MintableFactory.deploy('FST', 'Fair Sale Token')
   console.log(`Deployed ${await mesaToken.symbol()} at ${mesaToken.address}`)
