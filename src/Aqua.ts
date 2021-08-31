@@ -188,7 +188,7 @@ export class Aqua {
     const templateAddress = this.getLaunchedTemplateAddress(launchTemplateTxRecipt)
     // Get the SaleTemplate address
     const saleTemplate = Contracts.FixedPriceSaleTemplate.connect(templateAddress, this.provider)
-    // Sale fee
+    // Create the sale from the template
     const createSaleTx = await saleTemplate.createSale({
       value: await this.factory.saleFee(), // fetch the saleFee from the Factory
     })
