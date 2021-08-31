@@ -23,10 +23,10 @@ import { Aqua, RINKEBY_CONFIG } from '../src'
   const mesaToken = await ERC20MintableFactory.deploy('FST', 'Fair Sale Token')
   console.log(`Deployed ${await mesaToken.symbol()} at ${mesaToken.address}`)
   // total tokens for sale is 1000
-  const tokenOutSupply = utils.parseEther('50')
-  // Mint tokenOutSupply to saleCreator
-  await (await mesaToken.mint(saleCreator.address, tokenOutSupply)).wait(3)
-  console.log(`Minted ${utils.formatEther(tokenOutSupply)} to ${saleCreator.address}`)
+  const tokensForSale = utils.parseEther('50')
+  // Mint tokensForSale to saleCreator
+  await (await mesaToken.mint(saleCreator.address, tokensForSale)).wait(3)
+  console.log(`Minted ${utils.formatEther(tokensForSale)} to ${saleCreator.address}`)
   // Approve saleLauncher by saleCreator
   await (await mesaToken.approve(aqua.saleLauncher.address, ethers.constants.MaxUint256)).wait(3)
   console.log(`Approved aqua.SaleLauncher to spend $${await mesaToken.symbol()}`)
