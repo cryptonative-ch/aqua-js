@@ -196,7 +196,6 @@ export class Aqua {
     // Add to transactions
     transactions.push(createSaleTx)
 
-    // Wait for confirmation
     const createSaleTxReceipt = await createSaleTx.wait(this.confirmationNumber)
     // Extract the newSale from logs
     const newSaleAddress = `0x${createSaleTxReceipt.logs[0].topics[1].substring(26)}`
