@@ -3,15 +3,15 @@ import { ContractReceipt, ContractTransaction } from 'ethers'
 import { Provider } from '@ethersproject/abstract-provider'
 import { Signer } from '@ethersproject/abstract-signer'
 // Contracts
-import { AquaFactory, Contracts, FixedPriceSale, SaleLauncher, TemplateLauncher } from './contracts'
+import { AquaFactory, Contracts, FairSale, FixedPriceSale, SaleLauncher, TemplateLauncher } from './contracts'
 // ABI encoders
-import { encodeInitDataFixedPriceSale } from './encoders'
+import { encodeInitDataFixedPriceSale, encodeInitDataFairSale } from './encoders'
 // Errors
 import { AquaError, SaleTemplateNotRegistered } from './errors'
 // Subgraph
 import { Subgraph } from './Subgraph'
 // Types/Interfaces
-import { FixedPriceSaleOptions, AquaConfigMap } from './types'
+import { FixedPriceSaleOptions, FairPriceSaleOptions, AquaConfigMap } from './types'
 
 interface AquaContracts {
   factory: AquaFactory
@@ -19,12 +19,36 @@ interface AquaContracts {
   templateLauncher: TemplateLauncher
 }
 
+interface CreateSaleReturn<T> {
+  sale: T
+  transactions: ContractTransaction[]
+}
+
 export class Aqua {
+  /**
+   * `AquaFactory` contract instance
+   */
   readonly factory: AquaFactory
+  /**
+   * `SaleLauncher` contract instance
+   */
   readonly saleLauncher: SaleLauncher
+  /**
+   * `TemplateLauncher` contract instance
+   */
   readonly templateLauncher: TemplateLauncher
+  /**
+   * Subgraph instance
+   */
   readonly subgraph: Subgraph
+  /**
+   * Signer to be used for all transactions
+   */
   readonly provider: Signer | Provider
+  /**
+   * Number of confirmation for all transactions
+   */
+  confirmationNumber: number
 
   constructor(
     { factory, saleLauncher, templateLauncher, subgraph }: AquaConfigMap,
@@ -35,6 +59,7 @@ export class Aqua {
     this.templateLauncher = Contracts.TemplateLauncher.connect(templateLauncher, signerOrProvider)
     this.subgraph = new Subgraph(subgraph)
     this.provider = signerOrProvider
+    this.confirmationNumber = 3
   }
 
   /**
@@ -53,28 +78,26 @@ export class Aqua {
   }
 
   /**
-   * Adds a new Sale contract (module) to SaleLauncher contract
-   * @param mesa the Mesa instance
+   * Adds a new Sale contract (module) to `SaleLauncher` contract
    * @param saleAddress <SaleType>Template contract address
    * @returns `ContractReceipt`
    * @throws any
    */
   async addSaleModule(saleAddress: string) {
     const addTemplateTx = await this.saleLauncher.addTemplate(saleAddress)
-    const addTemplateTxReceipt = addTemplateTx.wait(1)
+    const addTemplateTxReceipt = addTemplateTx.wait(this.confirmationNumber)
     return addTemplateTxReceipt
   }
 
   /**
-   * Adds a new Sale contract to TemplateLauncher contract
-   * @param mesa the Mesa instance
+   * Adds a new Sale contract to `TemplateLauncher` contract
    * @param templateAddress <SaleType>Template contract address
    * @returns `ContractReceipt`
    * @throws transactional errors from the contract
    */
   async addSaleTemplate(saleTemplateAddress: string) {
     const addTemplateTx = await this.templateLauncher.addTemplate(saleTemplateAddress)
-    const addTemplateTxReceipt = await addTemplateTx.wait(1)
+    const addTemplateTxReceipt = await addTemplateTx.wait(this.confirmationNumber)
     return addTemplateTxReceipt
   }
 
@@ -87,30 +110,29 @@ export class Aqua {
   async createFixedPriceSale(
     saleOptions: FixedPriceSaleOptions,
     metaData: string
-  ): Promise<{ fixedPriceSale: FixedPriceSale; transactions: ContractTransaction[] }> {
+  ): Promise<CreateSaleReturn<FixedPriceSale>> {
+    //
+    const templateName = `FixedPriceSaleTemplate`
     // Store all transctions
     const transactions: ContractTransaction[] = []
     // Fetch the saleTemplateId
     const saleTemplates = await this.subgraph.getSaleTemplates()
-    const fixedPriceSaleTemplate = saleTemplates.find(({ name }) => name == 'FixedPriceSaleTemplate')
-    if (!fixedPriceSaleTemplate) {
-      throw new SaleTemplateNotRegistered('Mesa: FixedPriceSaleTemplate is not registered')
+    const template = saleTemplates.find(({ name }) => name == templateName)
+    // Without a source template, the sale template cannot be launched
+    if (!template) {
+      throw new SaleTemplateNotRegistered(templateName)
     }
     // Encode sale data
     const saleOptionsInitDataBytes = encodeInitDataFixedPriceSale({
       ...saleOptions,
       saleLauncher: this.saleLauncher.address,
-      saleTemplateId: fixedPriceSaleTemplate.id,
+      saleTemplateId: template.id,
     })
     // Launch a new template
-    const launchTemplateTx = await this.factory.launchTemplate(
-      fixedPriceSaleTemplate.id,
-      saleOptionsInitDataBytes,
-      metaData
-    )
+    const launchTemplateTx = await this.factory.launchTemplate(template.id, saleOptionsInitDataBytes, metaData)
     // Add to transctions
     transactions.push(launchTemplateTx)
-    const launchTemplateTxRecipt = await launchTemplateTx.wait(2)
+    const launchTemplateTxRecipt = await launchTemplateTx.wait(this.confirmationNumber)
     // Get the <Type>SaleTemplate address
     const templateAddress = this.getLaunchedTemplateAddress(launchTemplateTxRecipt)
     // Get the SaleTemplate address
@@ -119,14 +141,67 @@ export class Aqua {
     const createSaleTx = await saleTemplate.createSale({
       value: await this.factory.saleFee(), // fetch the saleFee from the Factory
     })
+
     // Add to transactions
     transactions.push(createSaleTx)
-    const createSaleTxReceipt = await createSaleTx.wait(3)
-    // Add to transctions
+
+    const createSaleTxReceipt = await createSaleTx.wait(this.confirmationNumber)
     // Extract the newSale from logs
     const newSaleAddress = `0x${createSaleTxReceipt.logs[0].topics[1].substring(26)}`
+    // Return sale and transactions
     return {
-      fixedPriceSale: Contracts.FixedPriceSale.connect(newSaleAddress, this.provider),
+      sale: Contracts.FixedPriceSale.connect(newSaleAddress, this.provider),
+      transactions,
+    }
+  }
+
+  /**
+   * Creates a new `FairSale` and returns the `FairSale` contract instance. Involves:
+   * - Fetch the `FairSaleTemplate`'s ID from the subgraph
+   * - Launch the a new `FairSaleTemplate` template via `AquaFactory`
+   * - Initialize the `FairSale` from the template
+   */
+  async createFairSale(saleOptions: FairPriceSaleOptions, metaData: string): Promise<CreateSaleReturn<FairSale>> {
+    // Sale template name
+    const templateName = `FairSaleTemplate`
+    // Store all transctions
+    const transactions: ContractTransaction[] = []
+    // Fetch the saleTemplateId
+    const saleTemplates = await this.subgraph.getSaleTemplates()
+    const template = saleTemplates.find(({ name }) => name == templateName)
+    // Without a source template, the sale template cannot be launched
+    if (!template) {
+      throw new SaleTemplateNotRegistered(templateName)
+    }
+    // Encode sale data
+    const saleOptionsInitDataBytes = encodeInitDataFairSale({
+      ...saleOptions,
+      saleLauncher: this.saleLauncher.address,
+      saleTemplateId: template.id,
+    })
+    // Launch a new template
+    const launchTemplateTx = await this.factory.launchTemplate(template.id, saleOptionsInitDataBytes, metaData)
+    // Add to transctions
+    transactions.push(launchTemplateTx)
+    const launchTemplateTxRecipt = await launchTemplateTx.wait(this.confirmationNumber)
+    // Get the <Type>SaleTemplate address
+    const templateAddress = this.getLaunchedTemplateAddress(launchTemplateTxRecipt)
+    // Get the SaleTemplate address
+    const saleTemplate = Contracts.FixedPriceSaleTemplate.connect(templateAddress, this.provider)
+    // Create the sale from the template
+    const createSaleTx = await saleTemplate.createSale({
+      value: await this.factory.saleFee(), // fetch the saleFee from the Factory
+    })
+
+    // Add to transactions
+    transactions.push(createSaleTx)
+
+    const createSaleTxReceipt = await createSaleTx.wait(this.confirmationNumber)
+    // Extract the newSale from logs
+    const newSaleAddress = `0x${createSaleTxReceipt.logs[0].topics[1].substring(26)}`
+    // Return sale and transactions
+    return {
+      sale: Contracts.FairSale.connect(newSaleAddress, this.provider),
       transactions,
     }
   }
@@ -146,7 +221,7 @@ export class Aqua {
     )
     // Event was not found
     if (!eventTemplateLaunched || !eventTemplateLaunched.args) {
-      throw new AquaError('Transction did not emit any event TemplateLaunched')
+      throw new AquaError('Transction did not emit TemplateLaunched event')
     }
 
     return eventTemplateLaunched.args.template as string

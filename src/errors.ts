@@ -3,6 +3,13 @@
  */
 
 export class AquaError extends Error {
-  name: string = 'AquaError'
+  constructor(message: string) {
+    super(message)
+    super.name = 'AquaError'
+  }
 }
-export class SaleTemplateNotRegistered extends AquaError {}
+export class SaleTemplateNotRegistered extends AquaError {
+  constructor(template: string) {
+    super(`Template ${template} is not registered`)
+  }
+}

@@ -11,15 +11,15 @@ export * from './contracts'
 
 // Preconfigured map for quick bootstraping
 export const XDAI_CONFIG: AquaConfigMap = {
-  factory: '0x6897427e8d129d040F066a3Dcb106da91e84ab47',
-  saleLauncher: '0xfa4Fbd5DC4a0C3aE54aA3a1fE52099d7d6F94227',
-  templateLauncher: '0x1c1006D122A7f09A047f42D16464A3e7fBdB24C2',
+  factory: '0x15edf1De363654A749eD5Af116C7e03d99892140',
+  saleLauncher: '0x8AfD7eDE2B07158FdAc784884a4F44E39799a0a2',
+  templateLauncher: '0x02D4DF1316Eed1C8d170c04aa6e42128dD3Ed11A',
   subgraph: 'https://api.thegraph.com/subgraphs/name/adamazad/aqua-xdai-next',
 }
 
 export const RINKEBY_CONFIG: AquaConfigMap = {
-  factory: '0x6f90A6b92b69A775d0a2231011b3704d876b51a8',
-  saleLauncher: '0x6f90A6b92b69A775d0a2231011b3704d876b51a8',
-  templateLauncher: '0xA731dEc18bD791D817bd67E9944793D5BF76f5C0',
-  subgraph: 'https://api.thegraph.com/subgraphs/name/adamazad/mesa',
+  factory: '0xA4bEdDf001392121a88192a2a2348c9102e8E6B3',
+  saleLauncher: '0x248617E4f69E86a727A4e03bA8d6e65A23d12e45',
+  templateLauncher: '0xC8Ab9E079D8207fB755953b0C464C8C5313FE83a',
+  subgraph: 'https://api.thegraph.com/subgraphs/name/mprasanjith/aqua-rinkeby-next',
 }
