@@ -2,30 +2,28 @@
   "name": "@dxdao/aqua",
   "version": "0.1.3",
   "private": false,
-  "description": "MesaJS gives developers access to the entire Mesa ecosystem a single package",
+  "description": "AquaJS gives developers access to the entire Aqua ecosystem a single package",
   "main": "dist/index.js",
   "dependencies": {
     "@ethersproject/providers": "^5.1.2",
+    "@dxdao/aqua-sc": ">=0.0.0-dev.0 <0.0.0",
     "axios": "^0.21.1",
     "ethers": "^5.1.0"
   },
   "devDependencies": {
-    "@typechain/ethers-v5": "^6.0.5",
     "@types/graphql": "^14.5.0",
     "apollo": "^2.32.8",
     "dayjs": "^1.10.4",
     "nodemon": "^2.0.7",
-    "typechain": "^4.0.3",
     "typescript": "^4.2.4"
   },
   "scripts": {
-    "typechain": "typechain --target ethers-v5 --outDir src/contracts 'abis/*.json'",
-    "build-abis": "build-abis.sh",
-    "build": "tsc"
+    "clear": "rm -rf dist && rm -rf types",
+    "build": "yarn clear && tsc"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cryptonative-ch/mesa-js.git"
+    "url": "git+https://github.com/cryptonative-ch/aqua-js.git"
   },
   "files": [
     "LICENSE.md",
@@ -44,8 +42,8 @@
   "author": "Adam Azad <adam@adamazad.com> (https://adamazad.com/)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/cryptonative-ch/mesa-js/issues"
+    "url": "https://github.com/cryptonative-ch/aqua-js/issues"
   },
-  "homepage": "https://github.com/cryptonative-ch/mesa-js#readme",
+  "homepage": "https://github.com/cryptonative-ch/aqua-js#readme",
   "types": "types/index.d.ts"
 }
