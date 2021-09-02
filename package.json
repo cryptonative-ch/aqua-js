@@ -5,8 +5,8 @@
   "description": "AquaJS gives developers access to the entire Aqua ecosystem a single package",
   "main": "dist/index.js",
   "dependencies": {
+    "@dxdao/aqua-sc": "^0.1.2-0",
     "@ethersproject/providers": "^5.1.2",
-    "@dxdao/aqua-sc": ">=0.0.0-dev.0 <0.0.0",
     "axios": "^0.21.1",
     "ethers": "^5.1.0"
   },

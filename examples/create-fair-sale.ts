@@ -32,8 +32,7 @@ import { Aqua, RINKEBY_CONFIG } from '../src'
     console.log(`Approved aqua.SaleLauncher to spend $${await aquaToken.symbol()}`)
     // Use the last block timestamp to set startDate and endDate
     const lastBlock = await provider.getBlock(await provider.getBlockNumber())
-    const startDate = lastBlock.timestamp + 1800 // starts in 3 minutes from current block
-    const endDate = startDate + 3600 * 72 // lasts for 72 hours
+    const duration = lastBlock.timestamp + 3600 * 72 // starts in 3 minutes from current block
     // Start deploying the sale via the SDK
     console.log(`Launching new FairSale via AquaFactory`)
     // Create the sale
@@ -41,9 +40,8 @@ import { Aqua, RINKEBY_CONFIG } from '../src'
       {
         tokenOut: aquaToken.address,
         tokenIn: RINKEBY_DAI_ADDRESS,
-        auctionStartDate: startDate,
-        auctionEndDate: endDate,
-        orderCancelationPeriodDuration: endDate,
+        duration: duration,
+        orderCancelationPeriodDuration: duration,
         tokensForSale,
         minRaise: utils.parseEther('5'), // 10% threshold
         minPrice: utils.parseEther('1'),
