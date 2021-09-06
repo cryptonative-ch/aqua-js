@@ -1,6 +1,6 @@
 {
   "name": "@dxdao/aqua",
-  "version": "0.0.0-dev.1",
+  "version": "0.0.0-dev.2",
   "private": false,
   "description": "AquaJS gives developers access to the entire Aqua ecosystem a single package",
   "main": "dist/index.js",
