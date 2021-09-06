@@ -2,12 +2,12 @@
 import type { Provider } from '@ethersproject/providers'
 import type { Signer } from 'ethers'
 // Contracts
-import type { AquaFactory, SaleLauncher, TemplateLauncher } from '../contracts'
+import type { AquaFactory, SaleLauncher, TemplateLauncher } from '@dxdao/aqua-sc'
 // Subgraph
 import type { Subgraph } from '../Subgraph'
 // Export
-export type { InitDataFairSaleOptions, InitDataFixedPriceSaleOptions } from './encoders'
-export type { FixedPriceSaleOptions } from './sales'
+export type { InitDataFairSaleOptions, InitDataFixedPriceSaleOptions } from '@dxdao/aqua-sc'
+export type { FixedPriceSaleOptions, FairPriceSaleOptions } from './sales'
 export type {
   BooleanMap,
   DocumentTimestampFields,
@@ -27,25 +27,25 @@ export interface CreateInstanceOptions {
   subgraphEndpoint: string
 }
 
-export interface MesaContracts {
+export interface AquaContracts {
   factory: AquaFactory
   saleLauncher: SaleLauncher
   templateLauncher: TemplateLauncher
 }
 
 export interface AquaInstance<P = Provider | Signer> {
-  contracts: MesaContracts
+  contracts: AquaContracts
   subgraph: Subgraph
   provider: P
 }
 
 export interface AddSaleOptions {
-  mesa: AquaInstance
+  aqua: AquaInstance
   sale: string
 }
 
 export interface AddTemplateOptions {
-  mesa: AquaInstance
+  aqua: AquaInstance
   template: string
 }
 

@@ -107,3 +107,7 @@ yarn.lock
 
 #misc
 notes.md
+
+#dist
+dist/
+types/

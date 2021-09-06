@@ -45,7 +45,7 @@ After the template is deployed, connect to it and call `createSale`. This transa
 
 ## Use The SDK
 
-The SDK combines all this into a single method `Mesa.createFixedPriceSale`. See [example](./create-fixed-price-sale.ts)
+The SDK combines all this into a single method `Aqua.createFixedPriceSale`. See [example](./create-fixed-price-sale.ts)
 
 ## How to run create-fixed-price-sale.ts
 
@@ -62,7 +62,7 @@ The SDK combines all this into a single method `Mesa.createFixedPriceSale`. See 
 ```
 Deployed FPST 2 at 0x310c95Fd16094793666f17e32C94887cA3504D68
 Minted 50.0 to 0x6F736630D86FE714E8Ce02c68f431347789F9835
-Approved Mesa.SaleLauncher to spend $FPST 2
+Approved Aqua.SaleLauncher to spend $FPST 2
 Launching new FixedPriceSale via AquaFactory
 [
   {

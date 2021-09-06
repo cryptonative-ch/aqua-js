@@ -1,4 +1,4 @@
-import { InitDataFixedPriceSaleOptions } from './encoders'
+import { InitDataFixedPriceSaleOptions, InitDataFairSaleOptions } from '@dxdao/aqua-sc'
 
 /**
  * Builds FixedPriceSaleOptions from the encoder data by excluding saleLauncher and saleTemplateId fields
@@ -6,4 +6,9 @@ import { InitDataFixedPriceSaleOptions } from './encoders'
 export type FixedPriceSaleOptions = Pick<
   InitDataFixedPriceSaleOptions,
   Exclude<keyof InitDataFixedPriceSaleOptions, 'saleLauncher' | 'saleTemplateId'>
+>
+
+export type FairPriceSaleOptions = Pick<
+  InitDataFairSaleOptions,
+  Exclude<keyof InitDataFairSaleOptions, 'saleLauncher' | 'saleTemplateId'>
 >
