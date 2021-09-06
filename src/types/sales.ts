@@ -1,4 +1,4 @@
-import { InitDataFixedPriceSaleOptions, InitDataFairSaleOptions } from './encoders'
+import { InitDataFixedPriceSaleOptions, InitDataFairSaleOptions } from '@dxdao/aqua-sc'
 
 /**
  * Builds FixedPriceSaleOptions from the encoder data by excluding saleLauncher and saleTemplateId fields

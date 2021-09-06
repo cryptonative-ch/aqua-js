@@ -3,21 +3,27 @@ import { ContractReceipt, ContractTransaction } from 'ethers'
 import { Provider } from '@ethersproject/abstract-provider'
 import { Signer } from '@ethersproject/abstract-signer'
 // Contracts
-import { AquaFactory, Contracts, FairSale, FixedPriceSale, SaleLauncher, TemplateLauncher } from './contracts'
-// ABI encoders
-import { encodeInitDataFixedPriceSale, encodeInitDataFairSale } from './encoders'
+import {
+  AquaFactory,
+  AquaFactory__factory,
+  FairSale,
+  FairSale__factory,
+  FixedPriceSale,
+  FixedPriceSale__factory,
+  SaleLauncher,
+  SaleLauncher__factory,
+  TemplateLauncher,
+  TemplateLauncher__factory,
+  FixedPriceSaleTemplate__factory,
+  encodeInitDataFairSale,
+  encodeInitDataFixedPriceSale,
+} from '@dxdao/aqua-sc'
 // Errors
 import { AquaError, SaleTemplateNotRegistered } from './errors'
 // Subgraph
 import { Subgraph } from './Subgraph'
 // Types/Interfaces
-import { FixedPriceSaleOptions, FairPriceSaleOptions, AquaConfigMap } from './types'
-
-interface AquaContracts {
-  factory: AquaFactory
-  saleLauncher: SaleLauncher
-  templateLauncher: TemplateLauncher
-}
+import { FixedPriceSaleOptions, FairPriceSaleOptions, AquaConfigMap, AquaContracts } from './types'
 
 interface CreateSaleReturn<T> {
   sale: T
@@ -54,20 +60,20 @@ export class Aqua {
     { factory, saleLauncher, templateLauncher, subgraph }: AquaConfigMap,
     signerOrProvider: Signer | Provider
   ) {
-    this.factory = Contracts.AquaFactory.connect(factory, signerOrProvider)
-    this.saleLauncher = Contracts.SaleLauncher.connect(saleLauncher, signerOrProvider)
-    this.templateLauncher = Contracts.TemplateLauncher.connect(templateLauncher, signerOrProvider)
+    this.factory = AquaFactory__factory.connect(factory, signerOrProvider)
+    this.saleLauncher = SaleLauncher__factory.connect(saleLauncher, signerOrProvider)
+    this.templateLauncher = TemplateLauncher__factory.connect(templateLauncher, signerOrProvider)
     this.subgraph = new Subgraph(subgraph)
     this.provider = signerOrProvider
     this.confirmationNumber = 3
   }
 
   /**
-   * Returns the three main contracts from the Mesa instance
+   * Returns the three main contracts from the Aqua instance
    * - AquaFactory
    * - SaleLauncher
    * - TemplateLauncher
-   * @returns `MesaContract`
+   * @returns `AquaContract`
    */
   contracts(): AquaContracts {
     return {
@@ -136,7 +142,7 @@ export class Aqua {
     // Get the <Type>SaleTemplate address
     const templateAddress = this.getLaunchedTemplateAddress(launchTemplateTxRecipt)
     // Get the SaleTemplate address
-    const saleTemplate = Contracts.FixedPriceSaleTemplate.connect(templateAddress, this.provider)
+    const saleTemplate = FixedPriceSaleTemplate__factory.connect(templateAddress, this.provider)
     // Sale fee
     const createSaleTx = await saleTemplate.createSale({
       value: await this.factory.saleFee(), // fetch the saleFee from the Factory
@@ -150,7 +156,7 @@ export class Aqua {
     const newSaleAddress = `0x${createSaleTxReceipt.logs[0].topics[1].substring(26)}`
     // Return sale and transactions
     return {
-      sale: Contracts.FixedPriceSale.connect(newSaleAddress, this.provider),
+      sale: FixedPriceSale__factory.connect(newSaleAddress, this.provider),
       transactions,
     }
   }
@@ -187,7 +193,7 @@ export class Aqua {
     // Get the <Type>SaleTemplate address
     const templateAddress = this.getLaunchedTemplateAddress(launchTemplateTxRecipt)
     // Get the SaleTemplate address
-    const saleTemplate = Contracts.FixedPriceSaleTemplate.connect(templateAddress, this.provider)
+    const saleTemplate = FixedPriceSaleTemplate__factory.connect(templateAddress, this.provider)
     // Create the sale from the template
     const createSaleTx = await saleTemplate.createSale({
       value: await this.factory.saleFee(), // fetch the saleFee from the Factory
@@ -201,7 +207,7 @@ export class Aqua {
     const newSaleAddress = `0x${createSaleTxReceipt.logs[0].topics[1].substring(26)}`
     // Return sale and transactions
     return {
-      sale: Contracts.FairSale.connect(newSaleAddress, this.provider),
+      sale: FairSale__factory.connect(newSaleAddress, this.provider),
       transactions,
     }
   }
